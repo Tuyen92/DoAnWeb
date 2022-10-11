@@ -4,20 +4,24 @@
  */
 package com.demo.WebKhoaLuan.controller;
 
+import com.demo.WebKhoaLuan.config.JWTToken;
+import com.demo.WebKhoaLuan.login.LoginRequest;
+import com.demo.WebKhoaLuan.login.LoginResponse;
 import com.demo.WebKhoaLuan.model.Nguoidung;
-import com.demo.WebKhoaLuan.model.NguoidungPK;
 import com.demo.WebKhoaLuan.repository.NguoidungRepository;
 import java.util.List;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -30,11 +34,32 @@ public class NguoidungController {
     @Autowired
     private NguoidungRepository nguoidungRepository;
     
-    @PostMapping(value = "/login")
-    @ResponseStatus(HttpStatus.OK)
-    public String handleNotifications(@RequestParam("notification") String itemid){
-    return "result successful result";
-}
+    @Autowired
+    private AuthenticationManager authenticationManager;
+    
+    @Autowired
+    private JWTToken tokenProvider;
+    
+    @PostMapping("/login")
+    public LoginResponse authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+
+        // Xác thực từ username và password.
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        loginRequest.getUsername(),
+                        loginRequest.getPassword()
+                )
+        );
+
+        // Nếu không xảy ra exception tức là thông tin hợp lệ
+        // Set thông tin authentication vào Security Context
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        // Trả về jwt cho người dùng.
+        String jwt = tokenProvider.generateToken((Nguoidung) authentication.getPrincipal());
+        return new LoginResponse(jwt);
+    }
+
     
     @PostMapping("/quantri/add")
     public Nguoidung themNguoidung(@RequestBody Nguoidung nguoidung){
@@ -55,4 +80,5 @@ public class NguoidungController {
     public void xoaNguoidung(@PathVariable (value = "maNd") String maNd){
         nguoidungRepository.deleteByMaNd(maNd);
     }
+       
 }

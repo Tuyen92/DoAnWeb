@@ -5,6 +5,7 @@
 package com.demo.WebKhoaLuan.config;
 
 import antlr.Token;
+import com.demo.WebKhoaLuan.Service.nguoidungService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +18,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
  *
@@ -26,14 +28,20 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableWebSecurity
 public class SpringSercurityConfig extends WebSecurityConfigurerAdapter{
     @Autowired
-    private UserDetailsService u;
+    private nguoidungService ndService;
     
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
     }
     
-    @Override
+    @Bean 
+    public JWTAuthentication jWTAuthentication(){
+        return new JWTAuthentication(); 
+    }
+    
+    
+    @Override 
     protected void configure(HttpSecurity http) throws Exception {
         http.formLogin().usernameParameter("username").passwordParameter("password");
         
@@ -50,11 +58,21 @@ public class SpringSercurityConfig extends WebSecurityConfigurerAdapter{
                 .antMatchers("/sinhvien/**").access("hasRole('ROLE_SV')").anyRequest().authenticated();
       
         http.csrf().disable();
+        http.httpBasic();
+        
+        http.addFilterBefore(jWTAuthentication(), UsernamePasswordAuthenticationFilter.class);
+    }
+    
+    
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean(); 
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(u).passwordEncoder(passwordEncoder());
+        auth.userDetailsService(ndService).passwordEncoder(passwordEncoder());
     }
     
 }

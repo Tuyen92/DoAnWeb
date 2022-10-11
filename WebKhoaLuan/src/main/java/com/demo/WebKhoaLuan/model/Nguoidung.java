@@ -5,22 +5,34 @@
 package com.demo.WebKhoaLuan.model;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
+import lombok.Data;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 /**
  *
  * @author PC
  */
 @Entity
+@Data
 @Table(name = "nguoidung")
 @XmlRootElement
 @NamedQueries({
@@ -39,7 +51,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Nguoidung.findByAnh", query = "SELECT n FROM Nguoidung n WHERE n.anh = :anh"),
     @NamedQuery(name = "Nguoidung.findByHoatDong", query = "SELECT n FROM Nguoidung n WHERE n.hoatDong = :hoatDong"),
     @NamedQuery(name = "Nguoidung.findByMaCv", query = "SELECT n FROM Nguoidung n WHERE n.nguoidungPK.maCv = :maCv")})
-public class Nguoidung implements Serializable {
+public class Nguoidung implements UserDetails {
 
     private static final long serialVersionUID = 1L;
     @EmbeddedId
@@ -143,7 +155,7 @@ public class Nguoidung implements Serializable {
         this.email = email;
     }
 
-    public String getUsername() {
+    public String GetUsername() {
         return username;
     }
 
@@ -151,7 +163,7 @@ public class Nguoidung implements Serializable {
         this.username = username;
     }
 
-    public String getPassword() {
+    public String GetPassword() {
         return password;
     }
 
@@ -198,6 +210,46 @@ public class Nguoidung implements Serializable {
     @Override
     public String toString() {
         return "com.demo.WebKhoaLuan.model.Nguoidung[ nguoidungPK=" + nguoidungPK + " ]";
+    }
+
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumns({    
+    @JoinColumn(name = "Chucvu", referencedColumnName = "ma_cv")})
+    private List<Chucvu> cacChucvu;
+    
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return cacChucvu;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+    
+    @Override
+    public String getPassword(){
+        return this.username;
+    }
+    
+    @Override
+    public String getUsername(){
+        return this.password;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
     
 }

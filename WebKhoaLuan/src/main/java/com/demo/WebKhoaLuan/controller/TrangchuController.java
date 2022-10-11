@@ -5,16 +5,19 @@
 package com.demo.WebKhoaLuan.controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  *
  * @author ADMIN
  */
-@Controller
+@RestController
+@RequestMapping("/")
 public class TrangchuController {
     
-    @RequestMapping("/")
+    @GetMapping
     public String home(){
         return "Hello user";
     }

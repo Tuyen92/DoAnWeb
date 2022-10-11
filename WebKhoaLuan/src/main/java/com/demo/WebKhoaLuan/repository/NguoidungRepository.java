@@ -28,4 +28,7 @@ public interface NguoidungRepository extends JpaRepository<Nguoidung, NguoidungP
     @Modifying
     @Query("DELETE FROM Nguoidung n WHERE n.nguoidungPK.maNd = :#{#maNd}")
     void deleteByMaNd(@Param("maNd") String maNd);
+    
+    
+    Nguoidung findByUsername(String username);
 }

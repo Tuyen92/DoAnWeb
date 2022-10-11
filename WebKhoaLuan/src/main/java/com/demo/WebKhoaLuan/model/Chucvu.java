@@ -13,6 +13,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
+import org.springframework.security.core.GrantedAuthority;
 
 /**
  *
@@ -25,7 +26,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Chucvu.findAll", query = "SELECT c FROM Chucvu c"),
     @NamedQuery(name = "Chucvu.findByMaCv", query = "SELECT c FROM Chucvu c WHERE c.maCv = :maCv"),
     @NamedQuery(name = "Chucvu.findByTenCv", query = "SELECT c FROM Chucvu c WHERE c.tenCv = :tenCv")})
-public class Chucvu implements Serializable {
+public class Chucvu implements GrantedAuthority {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -81,6 +82,11 @@ public class Chucvu implements Serializable {
     @Override
     public String toString() {
         return "com.demo.WebKhoaLuan.model.Chucvu[ maCv=" + maCv + " ]";
+    }
+
+    @Override
+    public String getAuthority() {
+        return maCv;
     }
     
 }
