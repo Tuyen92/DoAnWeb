@@ -8,8 +8,8 @@ import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  *
@@ -17,22 +17,24 @@ import javax.persistence.Id;
  */
 @Embeddable
 public class NguoidungPK implements Serializable {
-    @GeneratedValue  
+
     @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 10)
     @Column(name = "ma_nd")
     private String maNd;
-    
-    @GeneratedValue  
     @Basic(optional = false)
-    @Column(name = "ma_cv")
-    private String maCv;
+    @NotNull
+    @Size(min = 1, max = 10)
+    @Column(name = "chucvu_ma_cv")
+    private String chucvuMaCv;
 
     public NguoidungPK() {
     }
 
-    public NguoidungPK(String maNd, String maCv) {
+    public NguoidungPK(String maNd, String chucvuMaCv) {
         this.maNd = maNd;
-        this.maCv = maCv;
+        this.chucvuMaCv = chucvuMaCv;
     }
 
     public String getMaNd() {
@@ -43,19 +45,19 @@ public class NguoidungPK implements Serializable {
         this.maNd = maNd;
     }
 
-    public String getMaCv() {
-        return maCv;
+    public String getChucvuMaCv() {
+        return chucvuMaCv;
     }
 
-    public void setMaCv(String maCv) {
-        this.maCv = maCv;
+    public void setChucvuMaCv(String chucvuMaCv) {
+        this.chucvuMaCv = chucvuMaCv;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
         hash += (maNd != null ? maNd.hashCode() : 0);
-        hash += (maCv != null ? maCv.hashCode() : 0);
+        hash += (chucvuMaCv != null ? chucvuMaCv.hashCode() : 0);
         return hash;
     }
 
@@ -69,7 +71,7 @@ public class NguoidungPK implements Serializable {
         if ((this.maNd == null && other.maNd != null) || (this.maNd != null && !this.maNd.equals(other.maNd))) {
             return false;
         }
-        if ((this.maCv == null && other.maCv != null) || (this.maCv != null && !this.maCv.equals(other.maCv))) {
+        if ((this.chucvuMaCv == null && other.chucvuMaCv != null) || (this.chucvuMaCv != null && !this.chucvuMaCv.equals(other.chucvuMaCv))) {
             return false;
         }
         return true;
@@ -77,7 +79,7 @@ public class NguoidungPK implements Serializable {
 
     @Override
     public String toString() {
-        return "com.demo.WebKhoaLuan.model.NguoidungPK[ maNd=" + maNd + ", maCv=" + maCv + " ]";
+        return "com.demo.WebKhoaLuan.model.NguoidungPK[ maNd=" + maNd + ", chucvuMaCv=" + chucvuMaCv + " ]";
     }
     
 }

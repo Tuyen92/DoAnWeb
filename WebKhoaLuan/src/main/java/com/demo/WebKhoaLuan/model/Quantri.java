@@ -9,9 +9,14 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -24,36 +29,30 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "Quantri.findAll", query = "SELECT q FROM Quantri q"),
     @NamedQuery(name = "Quantri.findByMaQt", query = "SELECT q FROM Quantri q WHERE q.maQt = :maQt"),
-    @NamedQuery(name = "Quantri.findByCongViec", query = "SELECT q FROM Quantri q WHERE q.congViec = :congViec"),
-    @NamedQuery(name = "Quantri.findByMaNd", query = "SELECT q FROM Quantri q WHERE q.maNd = :maNd"),
-    @NamedQuery(name = "Quantri.findByMaCv", query = "SELECT q FROM Quantri q WHERE q.maCv = :maCv")})
+    @NamedQuery(name = "Quantri.findByCongViec", query = "SELECT q FROM Quantri q WHERE q.congViec = :congViec")})
 public class Quantri implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 10)
     @Column(name = "ma_qt")
     private String maQt;
+    @Size(max = 100)
     @Column(name = "cong_viec")
     private String congViec;
-    @Basic(optional = false)
-    @Column(name = "ma_nd")
-    private String maNd;
-    @Basic(optional = false)
-    @Column(name = "ma_cv")
-    private String maCv;
+    @JoinColumns({
+        @JoinColumn(name = "nguoidung_ma_nd", referencedColumnName = "ma_nd"),
+        @JoinColumn(name = "nguoidung_chucvu_ma_cv", referencedColumnName = "chucvu_ma_cv")})
+    @ManyToOne(optional = false)
+    private Nguoidung nguoidung;
 
     public Quantri() {
     }
 
     public Quantri(String maQt) {
         this.maQt = maQt;
-    }
-
-    public Quantri(String maQt, String maNd, String maCv) {
-        this.maQt = maQt;
-        this.maNd = maNd;
-        this.maCv = maCv;
     }
 
     public String getMaQt() {
@@ -72,20 +71,12 @@ public class Quantri implements Serializable {
         this.congViec = congViec;
     }
 
-    public String getMaNd() {
-        return maNd;
+    public Nguoidung getNguoidung() {
+        return nguoidung;
     }
 
-    public void setMaNd(String maNd) {
-        this.maNd = maNd;
-    }
-
-    public String getMaCv() {
-        return maCv;
-    }
-
-    public void setMaCv(String maCv) {
-        this.maCv = maCv;
+    public void setNguoidung(Nguoidung nguoidung) {
+        this.nguoidung = nguoidung;
     }
 
     @Override

@@ -8,6 +8,7 @@ import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.validation.constraints.NotNull;
 
 /**
  *
@@ -17,26 +18,25 @@ import javax.persistence.Embeddable;
 public class KhoaluanPK implements Serializable {
 
     @Basic(optional = false)
+    @NotNull
     @Column(name = "ma_kl")
     private int maKl;
     @Basic(optional = false)
-    @Column(name = "ma_dk")
-    private int maDk;
+    @NotNull
+    @Column(name = "dangkykhoaluan_ma_dk")
+    private int dangkykhoaluanMaDk;
     @Basic(optional = false)
-    @Column(name = "ma_sv")
-    private String maSv;
-    @Basic(optional = false)
-    @Column(name = "ma_hd")
-    private int maHd;
+    @NotNull
+    @Column(name = "dangkykhoaluan_detai_ma_dt")
+    private int dangkykhoaluanDetaiMaDt;
 
     public KhoaluanPK() {
     }
 
-    public KhoaluanPK(int maKl, int maDk, String maSv, int maHd) {
+    public KhoaluanPK(int maKl, int dangkykhoaluanMaDk, int dangkykhoaluanDetaiMaDt) {
         this.maKl = maKl;
-        this.maDk = maDk;
-        this.maSv = maSv;
-        this.maHd = maHd;
+        this.dangkykhoaluanMaDk = dangkykhoaluanMaDk;
+        this.dangkykhoaluanDetaiMaDt = dangkykhoaluanDetaiMaDt;
     }
 
     public int getMaKl() {
@@ -47,37 +47,28 @@ public class KhoaluanPK implements Serializable {
         this.maKl = maKl;
     }
 
-    public int getMaDk() {
-        return maDk;
+    public int getDangkykhoaluanMaDk() {
+        return dangkykhoaluanMaDk;
     }
 
-    public void setMaDk(int maDk) {
-        this.maDk = maDk;
+    public void setDangkykhoaluanMaDk(int dangkykhoaluanMaDk) {
+        this.dangkykhoaluanMaDk = dangkykhoaluanMaDk;
     }
 
-    public String getMaSv() {
-        return maSv;
+    public int getDangkykhoaluanDetaiMaDt() {
+        return dangkykhoaluanDetaiMaDt;
     }
 
-    public void setMaSv(String maSv) {
-        this.maSv = maSv;
-    }
-
-    public int getMaHd() {
-        return maHd;
-    }
-
-    public void setMaHd(int maHd) {
-        this.maHd = maHd;
+    public void setDangkykhoaluanDetaiMaDt(int dangkykhoaluanDetaiMaDt) {
+        this.dangkykhoaluanDetaiMaDt = dangkykhoaluanDetaiMaDt;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
         hash += (int) maKl;
-        hash += (int) maDk;
-        hash += (maSv != null ? maSv.hashCode() : 0);
-        hash += (int) maHd;
+        hash += (int) dangkykhoaluanMaDk;
+        hash += (int) dangkykhoaluanDetaiMaDt;
         return hash;
     }
 
@@ -91,13 +82,10 @@ public class KhoaluanPK implements Serializable {
         if (this.maKl != other.maKl) {
             return false;
         }
-        if (this.maDk != other.maDk) {
+        if (this.dangkykhoaluanMaDk != other.dangkykhoaluanMaDk) {
             return false;
         }
-        if ((this.maSv == null && other.maSv != null) || (this.maSv != null && !this.maSv.equals(other.maSv))) {
-            return false;
-        }
-        if (this.maHd != other.maHd) {
+        if (this.dangkykhoaluanDetaiMaDt != other.dangkykhoaluanDetaiMaDt) {
             return false;
         }
         return true;
@@ -105,7 +93,7 @@ public class KhoaluanPK implements Serializable {
 
     @Override
     public String toString() {
-        return "com.demo.WebKhoaLuan.model.KhoaluanPK[ maKl=" + maKl + ", maDk=" + maDk + ", maSv=" + maSv + ", maHd=" + maHd + " ]";
+        return "com.demo.WebKhoaLuan.model.KhoaluanPK[ maKl=" + maKl + ", dangkykhoaluanMaDk=" + dangkykhoaluanMaDk + ", dangkykhoaluanDetaiMaDt=" + dangkykhoaluanDetaiMaDt + " ]";
     }
     
 }

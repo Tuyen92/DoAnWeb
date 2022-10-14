@@ -2,23 +2,23 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.demo.WebKhoaLuan.config;
 
-import antlr.Token;
-import com.demo.WebKhoaLuan.Service.nguoidungService;
+
+
+import com.demo.WebKhoaLuan.Service.NguoidungService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
  *
@@ -26,53 +26,55 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  */
 @Configuration
 @EnableWebSecurity
-public class SpringSercurityConfig extends WebSecurityConfigurerAdapter{
-    @Autowired
-    private nguoidungService ndService;
+@ComponentScan(basePackages = "com.demo.WebKhoaLuan.repository")
+public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
+    @Bean
+    public UserDetailsService userDetailsService(){
+        return new NguoidungService();
+    }
     
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public BCryptPasswordEncoder encoder(){
         return new BCryptPasswordEncoder();
     }
     
-    @Bean 
-    public JWTAuthentication jWTAuthentication(){
-        return new JWTAuthentication(); 
+    
+//    @Override
+//    protected void configure(AuthenticationManagerBuilder a) throws Exception{
+//        a.userDetailsService(userDetailsService).passwordEncoder(encoder());
+//    } 
+    @Bean
+    public DaoAuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(userDetailsService());
+        authProvider.setPasswordEncoder(encoder());
+        return authProvider;
+    }
+ 
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.authenticationProvider(authenticationProvider());
     }
     
-    
-    @Override 
+    @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.formLogin().usernameParameter("username").passwordParameter("password");
+        http.formLogin().loginPage("/login").usernameParameter("username")
+                .passwordParameter("password");
         
-        http.formLogin().defaultSuccessUrl("/").failureUrl("/login?error");
+        http.formLogin().defaultSuccessUrl("/").failureUrl("/login?error"); 
         
         http.exceptionHandling().accessDeniedPage("/login?accessDenied");
         
+
         http.logout().logoutSuccessUrl("/login");
         
         http.authorizeRequests().antMatchers("/").permitAll()
                 .antMatchers("/quantri/**").access("hasRole('ROLE_QT')")
                 .antMatchers("/giangvien/**").access("hasRole('ROLE_GV')")
                 .antMatchers("/giaovu/**").access("hasRole('ROLE_GVU')")
-                .antMatchers("/sinhvien/**").access("hasRole('ROLE_SV')").anyRequest().authenticated();
+                .antMatchers("/sinhvien/**").access("hasRole('ROLE_SV')");
       
         http.csrf().disable();
-        http.httpBasic();
-        
-        http.addFilterBefore(jWTAuthentication(), UsernamePasswordAuthenticationFilter.class);
     }
-    
-    
-    @Bean
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean(); 
-    }
-
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(ndService).passwordEncoder(passwordEncoder());
-    }
-    
 }
+

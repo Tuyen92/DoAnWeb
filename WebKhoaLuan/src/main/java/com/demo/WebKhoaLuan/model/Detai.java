@@ -5,17 +5,22 @@
 package com.demo.WebKhoaLuan.model;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.util.Set;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -28,44 +33,43 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Detai.findAll", query = "SELECT d FROM Detai d"),
     @NamedQuery(name = "Detai.findByMaDt", query = "SELECT d FROM Detai d WHERE d.maDt = :maDt"),
     @NamedQuery(name = "Detai.findByTenDt", query = "SELECT d FROM Detai d WHERE d.tenDt = :tenDt"),
-    @NamedQuery(name = "Detai.findByNoiDungdt", query = "SELECT d FROM Detai d WHERE d.noiDungdt = :noiDungdt"),
-    @NamedQuery(name = "Detai.findByHanNop", query = "SELECT d FROM Detai d WHERE d.hanNop = :hanNop"),
-    @NamedQuery(name = "Detai.findByMaKhoa", query = "SELECT d FROM Detai d WHERE d.maKhoa = :maKhoa")})
+    @NamedQuery(name = "Detai.findByNoiDunngdt", query = "SELECT d FROM Detai d WHERE d.noiDunngdt = :noiDunngdt"),
+    @NamedQuery(name = "Detai.findByHanNop", query = "SELECT d FROM Detai d WHERE d.hanNop = :hanNop")})
 public class Detai implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
+    @NotNull
     @Column(name = "ma_dt")
-    private String maDt;
+    private Integer maDt;
+    @Size(max = 45)
     @Column(name = "ten_dt")
     private String tenDt;
-    @Column(name = "noi_dungdt")
-    private String noiDungdt;
+    @Size(max = 45)
+    @Column(name = "noi_dunngdt")
+    private String noiDunngdt;
+    @Size(max = 45)
     @Column(name = "han_nop")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date hanNop;
-    @Basic(optional = false)
-    @Column(name = "ma_khoa")
-    private String maKhoa;
+    private String hanNop;
+    @JoinColumn(name = "khoa_ma_khoa", referencedColumnName = "ma_khoa")
+    @ManyToOne(optional = false)
+    private Khoa khoaMaKhoa;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "detai")
+    private Set<Dangkykhoaluan> dangkykhoaluanSet;
 
     public Detai() {
     }
 
-    public Detai(String maDt) {
+    public Detai(Integer maDt) {
         this.maDt = maDt;
     }
 
-    public Detai(String maDt, String maKhoa) {
-        this.maDt = maDt;
-        this.maKhoa = maKhoa;
-    }
-
-    public String getMaDt() {
+    public Integer getMaDt() {
         return maDt;
     }
 
-    public void setMaDt(String maDt) {
+    public void setMaDt(Integer maDt) {
         this.maDt = maDt;
     }
 
@@ -77,28 +81,37 @@ public class Detai implements Serializable {
         this.tenDt = tenDt;
     }
 
-    public String getNoiDungdt() {
-        return noiDungdt;
+    public String getNoiDunngdt() {
+        return noiDunngdt;
     }
 
-    public void setNoiDungdt(String noiDungdt) {
-        this.noiDungdt = noiDungdt;
+    public void setNoiDunngdt(String noiDunngdt) {
+        this.noiDunngdt = noiDunngdt;
     }
 
-    public Date getHanNop() {
+    public String getHanNop() {
         return hanNop;
     }
 
-    public void setHanNop(Date hanNop) {
+    public void setHanNop(String hanNop) {
         this.hanNop = hanNop;
     }
 
-    public String getMaKhoa() {
-        return maKhoa;
+    public Khoa getKhoaMaKhoa() {
+        return khoaMaKhoa;
     }
 
-    public void setMaKhoa(String maKhoa) {
-        this.maKhoa = maKhoa;
+    public void setKhoaMaKhoa(Khoa khoaMaKhoa) {
+        this.khoaMaKhoa = khoaMaKhoa;
+    }
+
+    @XmlTransient
+    public Set<Dangkykhoaluan> getDangkykhoaluanSet() {
+        return dangkykhoaluanSet;
+    }
+
+    public void setDangkykhoaluanSet(Set<Dangkykhoaluan> dangkykhoaluanSet) {
+        this.dangkykhoaluanSet = dangkykhoaluanSet;
     }
 
     @Override

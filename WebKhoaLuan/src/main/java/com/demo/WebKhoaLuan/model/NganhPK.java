@@ -8,6 +8,8 @@ import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  *
@@ -17,18 +19,28 @@ import javax.persistence.Embeddable;
 public class NganhPK implements Serializable {
 
     @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 10)
     @Column(name = "ma_nganh")
     private String maNganh;
     @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 10)
     @Column(name = "ma_khoa")
     private String maKhoa;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 10)
+    @Column(name = "khoa_ma_khoa")
+    private String khoaMaKhoa;
 
     public NganhPK() {
     }
 
-    public NganhPK(String maNganh, String maKhoa) {
+    public NganhPK(String maNganh, String maKhoa, String khoaMaKhoa) {
         this.maNganh = maNganh;
         this.maKhoa = maKhoa;
+        this.khoaMaKhoa = khoaMaKhoa;
     }
 
     public String getMaNganh() {
@@ -47,11 +59,20 @@ public class NganhPK implements Serializable {
         this.maKhoa = maKhoa;
     }
 
+    public String getKhoaMaKhoa() {
+        return khoaMaKhoa;
+    }
+
+    public void setKhoaMaKhoa(String khoaMaKhoa) {
+        this.khoaMaKhoa = khoaMaKhoa;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
         hash += (maNganh != null ? maNganh.hashCode() : 0);
         hash += (maKhoa != null ? maKhoa.hashCode() : 0);
+        hash += (khoaMaKhoa != null ? khoaMaKhoa.hashCode() : 0);
         return hash;
     }
 
@@ -68,12 +89,15 @@ public class NganhPK implements Serializable {
         if ((this.maKhoa == null && other.maKhoa != null) || (this.maKhoa != null && !this.maKhoa.equals(other.maKhoa))) {
             return false;
         }
+        if ((this.khoaMaKhoa == null && other.khoaMaKhoa != null) || (this.khoaMaKhoa != null && !this.khoaMaKhoa.equals(other.khoaMaKhoa))) {
+            return false;
+        }
         return true;
     }
 
     @Override
     public String toString() {
-        return "com.demo.WebKhoaLuan.model.NganhPK[ maNganh=" + maNganh + ", maKhoa=" + maKhoa + " ]";
+        return "com.demo.WebKhoaLuan.model.NganhPK[ maNganh=" + maNganh + ", maKhoa=" + maKhoa + ", khoaMaKhoa=" + khoaMaKhoa + " ]";
     }
     
 }

@@ -5,14 +5,20 @@
 package com.demo.WebKhoaLuan.model;
 
 import java.io.Serializable;
+import java.util.Set;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -31,12 +37,18 @@ public class Tieuchi implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 10)
     @Column(name = "ma_tc")
     private String maTc;
+    @Size(max = 100)
     @Column(name = "noi_dung")
     private String noiDung;
+    @Size(max = 10)
     @Column(name = "phan_tram")
     private String phanTram;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "tieuchi")
+    private Set<Diem> diemSet;
 
     public Tieuchi() {
     }
@@ -67,6 +79,15 @@ public class Tieuchi implements Serializable {
 
     public void setPhanTram(String phanTram) {
         this.phanTram = phanTram;
+    }
+
+    @XmlTransient
+    public Set<Diem> getDiemSet() {
+        return diemSet;
+    }
+
+    public void setDiemSet(Set<Diem> diemSet) {
+        this.diemSet = diemSet;
     }
 
     @Override

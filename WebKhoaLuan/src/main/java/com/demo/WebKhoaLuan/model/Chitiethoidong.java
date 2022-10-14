@@ -13,6 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -32,6 +33,7 @@ public class Chitiethoidong implements Serializable {
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected ChitiethoidongPK chitiethoidongPK;
+    @Size(max = 100)
     @Column(name = "chuc_vuhd")
     private String chucVuhd;
     @JoinColumn(name = "ma_gv", referencedColumnName = "ma_gv", insertable = false, updatable = false)

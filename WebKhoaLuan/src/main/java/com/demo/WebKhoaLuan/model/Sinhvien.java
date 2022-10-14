@@ -9,10 +9,16 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import org.hibernate.annotations.Type;
 
 /**
  *
@@ -25,38 +31,39 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Sinhvien.findAll", query = "SELECT s FROM Sinhvien s"),
     @NamedQuery(name = "Sinhvien.findByMaSv", query = "SELECT s FROM Sinhvien s WHERE s.maSv = :maSv"),
     @NamedQuery(name = "Sinhvien.findByNienKhoa", query = "SELECT s FROM Sinhvien s WHERE s.nienKhoa = :nienKhoa"),
-    @NamedQuery(name = "Sinhvien.findByTinhTrang", query = "SELECT s FROM Sinhvien s WHERE s.tinhTrang = :tinhTrang"),
-    @NamedQuery(name = "Sinhvien.findByMaNganh", query = "SELECT s FROM Sinhvien s WHERE s.maNganh = :maNganh"),
-    @NamedQuery(name = "Sinhvien.findByMaKhoa", query = "SELECT s FROM Sinhvien s WHERE s.maKhoa = :maKhoa")})
+    @NamedQuery(name = "Sinhvien.findByTinhTrang", query = "SELECT s FROM Sinhvien s WHERE s.tinhTrang = :tinhTrang")})
 public class Sinhvien implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 10)
     @Column(name = "ma_sv")
     private String maSv;
+    @Size(max = 20)
     @Column(name = "nien_khoa")
     private String nienKhoa;
-    @Column(name = "tinh_trang")
-    private Short tinhTrang;
-    @Basic(optional = false)
-    @Column(name = "ma_nganh")
-    private String maNganh;
-    @Basic(optional = false)
-    @Column(name = "ma_khoa")
-    private String maKhoa;
+    @Column(name = "tinh_trang",columnDefinition = "TINYINT")
+    @Type(type = "org.hibernate.type.IntegerType")
+    private int tinhTrang;
+    @JoinColumns({
+        @JoinColumn(name = "nganh_ma_nganh", referencedColumnName = "ma_nganh"),
+        @JoinColumn(name = "nganh_ma_khoa", referencedColumnName = "ma_khoa"),
+        @JoinColumn(name = "nganh_khoa_ma_khoa", referencedColumnName = "khoa_ma_khoa")})
+    @ManyToOne(optional = false)
+    private Nganh nganh;
+    @JoinColumns({
+        @JoinColumn(name = "nguoidung_ma_nd", referencedColumnName = "ma_nd"),
+        @JoinColumn(name = "nguoidung_chucvu_ma_cv", referencedColumnName = "chucvu_ma_cv")})
+    @ManyToOne(optional = false)
+    private Nguoidung nguoidung;
 
     public Sinhvien() {
     }
 
     public Sinhvien(String maSv) {
         this.maSv = maSv;
-    }
-
-    public Sinhvien(String maSv, String maNganh, String maKhoa) {
-        this.maSv = maSv;
-        this.maNganh = maNganh;
-        this.maKhoa = maKhoa;
     }
 
     public String getMaSv() {
@@ -75,28 +82,28 @@ public class Sinhvien implements Serializable {
         this.nienKhoa = nienKhoa;
     }
 
-    public Short getTinhTrang() {
+    public int getTinhTrang() {
         return tinhTrang;
     }
 
-    public void setTinhTrang(Short tinhTrang) {
+    public void setTinhTrang(int tinhTrang) {
         this.tinhTrang = tinhTrang;
     }
 
-    public String getMaNganh() {
-        return maNganh;
+    public Nganh getNganh() {
+        return nganh;
     }
 
-    public void setMaNganh(String maNganh) {
-        this.maNganh = maNganh;
+    public void setNganh(Nganh nganh) {
+        this.nganh = nganh;
     }
 
-    public String getMaKhoa() {
-        return maKhoa;
+    public Nguoidung getNguoidung() {
+        return nguoidung;
     }
 
-    public void setMaKhoa(String maKhoa) {
-        this.maKhoa = maKhoa;
+    public void setNguoidung(Nguoidung nguoidung) {
+        this.nguoidung = nguoidung;
     }
 
     @Override

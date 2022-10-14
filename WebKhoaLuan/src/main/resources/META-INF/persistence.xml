@@ -17,6 +17,9 @@
     <class>com.demo.WebKhoaLuan.model.Chitiethoidong</class>
     <class>com.demo.WebKhoaLuan.model.Detai</class>
     <class>com.demo.WebKhoaLuan.model.Giaovu</class>
+    <class>com.demo.WebKhoaLuan.model.Diem</class>
+    <class>com.demo.WebKhoaLuan.model.Khoaluan_1</class>
+    <class>com.demo.WebKhoaLuan.model.Tieuchi_1</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/khoaluantotnghiepdb?zeroDateTimeBehavior=CONVERT_TO_NULL"/>
       <property name="javax.persistence.jdbc.user" value="root"/>

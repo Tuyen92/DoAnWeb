@@ -7,23 +7,23 @@ package com.demo.WebKhoaLuan.model;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
-import java.util.List;
+import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
-import lombok.Data;
+import javax.xml.bind.annotation.XmlTransient;
+import org.hibernate.annotations.Type;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -32,12 +32,10 @@ import org.springframework.security.core.userdetails.UserDetails;
  * @author PC
  */
 @Entity
-@Data
 @Table(name = "nguoidung")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Nguoidung.findAll", query = "SELECT n FROM Nguoidung n"),
-    @NamedQuery(name = "Nguoidung.deleteByMaNd", query = "DELETE FROM Nguoidung n WHERE n.nguoidungPK.maNd = :maNd"),
     @NamedQuery(name = "Nguoidung.findByMaNd", query = "SELECT n FROM Nguoidung n WHERE n.nguoidungPK.maNd = :maNd"),
     @NamedQuery(name = "Nguoidung.findByHo", query = "SELECT n FROM Nguoidung n WHERE n.ho = :ho"),
     @NamedQuery(name = "Nguoidung.findByTen", query = "SELECT n FROM Nguoidung n WHERE n.ten = :ten"),
@@ -50,35 +48,57 @@ import org.springframework.security.core.userdetails.UserDetails;
     @NamedQuery(name = "Nguoidung.findByPassword", query = "SELECT n FROM Nguoidung n WHERE n.password = :password"),
     @NamedQuery(name = "Nguoidung.findByAnh", query = "SELECT n FROM Nguoidung n WHERE n.anh = :anh"),
     @NamedQuery(name = "Nguoidung.findByHoatDong", query = "SELECT n FROM Nguoidung n WHERE n.hoatDong = :hoatDong"),
-    @NamedQuery(name = "Nguoidung.findByMaCv", query = "SELECT n FROM Nguoidung n WHERE n.nguoidungPK.maCv = :maCv")})
-public class Nguoidung implements UserDetails {
+    @NamedQuery(name = "Nguoidung.findByChucvuMaCv", query = "SELECT n FROM Nguoidung n WHERE n.nguoidungPK.chucvuMaCv = :chucvuMaCv")})
+public class Nguoidung implements Serializable  {
 
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected NguoidungPK nguoidungPK;
+    @Size(max = 50)
     @Column(name = "ho")
     private String ho;
+    @Size(max = 30)
     @Column(name = "ten")
     private String ten;
+    @Size(max = 5)
     @Column(name = "gioi_tinh")
     private String gioiTinh;
     @Column(name = "ngay_sinh")
     @Temporal(TemporalType.DATE)
     private Date ngaySinh;
+    @Size(max = 100)
     @Column(name = "dia_chi")
     private String diaChi;
+    @Size(max = 20)
     @Column(name = "sdt")
     private String sdt;
+    // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
+    @Size(max = 50)
     @Column(name = "email")
     private String email;
+    @Size(max = 10)
     @Column(name = "username")
     private String username;
+    @Size(max = 100)
     @Column(name = "password")
     private String password;
+    @Size(max = 100)
     @Column(name = "anh")
     private String anh;
-    @Column(name = "hoat_dong")
-    private Short hoatDong;
+    @Column(name = "hoat_dong",columnDefinition = "TINYINT")
+    @Type(type = "org.hibernate.type.IntegerType")
+    private int hoatDong;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "nguoidung")
+    private Set<Quantri> quantriSet;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "nguoidung")
+    private Set<Giangvien> giangvienSet;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "nguoidung")
+    private Set<Giaovu> giaovuSet;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "nguoidung")
+    private Set<Sinhvien> sinhvienSet;
+    @JoinColumn(name = "chucvu_ma_cv", referencedColumnName = "ma_cv", insertable = false, updatable = false)
+    @ManyToOne(optional = false)
+    private Chucvu chucvu;
 
     public Nguoidung() {
     }
@@ -87,8 +107,8 @@ public class Nguoidung implements UserDetails {
         this.nguoidungPK = nguoidungPK;
     }
 
-    public Nguoidung(String maNd, String maCv) {
-        this.nguoidungPK = new NguoidungPK(maNd, maCv);
+    public Nguoidung(String maNd, String chucvuMaCv) {
+        this.nguoidungPK = new NguoidungPK(maNd, chucvuMaCv);
     }
 
     public NguoidungPK getNguoidungPK() {
@@ -179,12 +199,56 @@ public class Nguoidung implements UserDetails {
         this.anh = anh;
     }
 
-    public Short getHoatDong() {
+    public int getHoatDong() {
         return hoatDong;
     }
 
     public void setHoatDong(Short hoatDong) {
         this.hoatDong = hoatDong;
+    }
+
+    @XmlTransient
+    public Set<Quantri> getQuantriSet() {
+        return quantriSet;
+    }
+
+    public void setQuantriSet(Set<Quantri> quantriSet) {
+        this.quantriSet = quantriSet;
+    }
+
+    @XmlTransient
+    public Set<Giangvien> getGiangvienSet() {
+        return giangvienSet;
+    }
+
+    public void setGiangvienSet(Set<Giangvien> giangvienSet) {
+        this.giangvienSet = giangvienSet;
+    }
+
+    @XmlTransient
+    public Set<Giaovu> getGiaovuSet() {
+        return giaovuSet;
+    }
+
+    public void setGiaovuSet(Set<Giaovu> giaovuSet) {
+        this.giaovuSet = giaovuSet;
+    }
+
+    @XmlTransient
+    public Set<Sinhvien> getSinhvienSet() {
+        return sinhvienSet;
+    }
+
+    public void setSinhvienSet(Set<Sinhvien> sinhvienSet) {
+        this.sinhvienSet = sinhvienSet;
+    }
+
+    public Chucvu getChucvu() {
+        return chucvu;
+    }
+
+    public void setChucvu(Chucvu chucvu) {
+        this.chucvu = chucvu;
     }
 
     @Override
@@ -211,45 +275,4 @@ public class Nguoidung implements UserDetails {
     public String toString() {
         return "com.demo.WebKhoaLuan.model.Nguoidung[ nguoidungPK=" + nguoidungPK + " ]";
     }
-
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumns({    
-    @JoinColumn(name = "Chucvu", referencedColumnName = "ma_cv")})
-    private List<Chucvu> cacChucvu;
-    
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return cacChucvu;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-    
-    @Override
-    public String getPassword(){
-        return this.username;
-    }
-    
-    @Override
-    public String getUsername(){
-        return this.password;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
-    
 }

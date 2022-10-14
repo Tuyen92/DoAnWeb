@@ -4,6 +4,7 @@
  */
 package com.demo.WebKhoaLuan.Service;
 
+import com.demo.WebKhoaLuan.model.MyUserDetails;
 import com.demo.WebKhoaLuan.model.Nguoidung;
 import com.demo.WebKhoaLuan.repository.NguoidungRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,19 +17,20 @@ import org.springframework.stereotype.Service;
  *
  * @author PC
  */
-@Service
-public class nguoidungService implements UserDetailsService{
-    
+
+public class NguoidungService implements UserDetailsService{
+
     @Autowired
     NguoidungRepository nguoidungRepository;
     
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Nguoidung nguoidung = nguoidungRepository.findByUsername(username);
-        if(nguoidung==null)
-            throw new UsernameNotFoundException("Tên người dùng không đúng");
+        if(nguoidung == null){
+            throw new UsernameNotFoundException("Không thấy người dùng");
+        }
         
-        return nguoidung;
+        return new MyUserDetails(nguoidung);
     }
     
 }

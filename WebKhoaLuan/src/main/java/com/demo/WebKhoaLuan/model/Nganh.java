@@ -5,13 +5,20 @@
 package com.demo.WebKhoaLuan.model;
 
 import java.io.Serializable;
+import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -25,16 +32,24 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Nganh.findByMaNganh", query = "SELECT n FROM Nganh n WHERE n.nganhPK.maNganh = :maNganh"),
     @NamedQuery(name = "Nganh.findByTenNganh", query = "SELECT n FROM Nganh n WHERE n.tenNganh = :tenNganh"),
     @NamedQuery(name = "Nganh.findByThongTin", query = "SELECT n FROM Nganh n WHERE n.thongTin = :thongTin"),
-    @NamedQuery(name = "Nganh.findByMaKhoa", query = "SELECT n FROM Nganh n WHERE n.nganhPK.maKhoa = :maKhoa")})
+    @NamedQuery(name = "Nganh.findByMaKhoa", query = "SELECT n FROM Nganh n WHERE n.nganhPK.maKhoa = :maKhoa"),
+    @NamedQuery(name = "Nganh.findByKhoaMaKhoa", query = "SELECT n FROM Nganh n WHERE n.nganhPK.khoaMaKhoa = :khoaMaKhoa")})
 public class Nganh implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected NganhPK nganhPK;
+    @Size(max = 100)
     @Column(name = "ten_nganh")
     private String tenNganh;
+    @Size(max = 300)
     @Column(name = "thong_tin")
     private String thongTin;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "nganh")
+    private Set<Sinhvien> sinhvienSet;
+    @JoinColumn(name = "khoa_ma_khoa", referencedColumnName = "ma_khoa", insertable = false, updatable = false)
+    @ManyToOne(optional = false)
+    private Khoa khoa;
 
     public Nganh() {
     }
@@ -43,8 +58,8 @@ public class Nganh implements Serializable {
         this.nganhPK = nganhPK;
     }
 
-    public Nganh(String maNganh, String maKhoa) {
-        this.nganhPK = new NganhPK(maNganh, maKhoa);
+    public Nganh(String maNganh, String maKhoa, String khoaMaKhoa) {
+        this.nganhPK = new NganhPK(maNganh, maKhoa, khoaMaKhoa);
     }
 
     public NganhPK getNganhPK() {
@@ -69,6 +84,23 @@ public class Nganh implements Serializable {
 
     public void setThongTin(String thongTin) {
         this.thongTin = thongTin;
+    }
+
+    @XmlTransient
+    public Set<Sinhvien> getSinhvienSet() {
+        return sinhvienSet;
+    }
+
+    public void setSinhvienSet(Set<Sinhvien> sinhvienSet) {
+        this.sinhvienSet = sinhvienSet;
+    }
+
+    public Khoa getKhoa() {
+        return khoa;
+    }
+
+    public void setKhoa(Khoa khoa) {
+        this.khoa = khoa;
     }
 
     @Override

@@ -11,10 +11,15 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -29,26 +34,29 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Giangvien.findAll", query = "SELECT g FROM Giangvien g"),
     @NamedQuery(name = "Giangvien.findByMaGv", query = "SELECT g FROM Giangvien g WHERE g.maGv = :maGv"),
     @NamedQuery(name = "Giangvien.findByHocVi", query = "SELECT g FROM Giangvien g WHERE g.hocVi = :hocVi"),
-    @NamedQuery(name = "Giangvien.findByHocHam", query = "SELECT g FROM Giangvien g WHERE g.hocHam = :hocHam"),
-    @NamedQuery(name = "Giangvien.findByMaNd", query = "SELECT g FROM Giangvien g WHERE g.maNd = :maNd"),
-    @NamedQuery(name = "Giangvien.findByMaCv", query = "SELECT g FROM Giangvien g WHERE g.maCv = :maCv")})
+    @NamedQuery(name = "Giangvien.findByHocHam", query = "SELECT g FROM Giangvien g WHERE g.hocHam = :hocHam")})
 public class Giangvien implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 10)
     @Column(name = "ma_gv")
     private String maGv;
+    @Size(max = 250)
     @Column(name = "hoc_vi")
     private String hocVi;
+    @Size(max = 100)
     @Column(name = "hoc_ham")
     private String hocHam;
-    @Basic(optional = false)
-    @Column(name = "ma_nd")
-    private String maNd;
-    @Basic(optional = false)
-    @Column(name = "ma_cv")
-    private String maCv;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "giangvien")
+    private Set<Diem> diemSet;
+    @JoinColumns({
+        @JoinColumn(name = "nguoidung_ma_nd", referencedColumnName = "ma_nd"),
+        @JoinColumn(name = "nguoidung_chucvu_ma_cv", referencedColumnName = "chucvu_ma_cv")})
+    @ManyToOne(optional = false)
+    private Nguoidung nguoidung;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "giangvien")
     private Set<Chitiethoidong> chitiethoidongSet;
 
@@ -57,12 +65,6 @@ public class Giangvien implements Serializable {
 
     public Giangvien(String maGv) {
         this.maGv = maGv;
-    }
-
-    public Giangvien(String maGv, String maNd, String maCv) {
-        this.maGv = maGv;
-        this.maNd = maNd;
-        this.maCv = maCv;
     }
 
     public String getMaGv() {
@@ -89,20 +91,21 @@ public class Giangvien implements Serializable {
         this.hocHam = hocHam;
     }
 
-    public String getMaNd() {
-        return maNd;
+    @XmlTransient
+    public Set<Diem> getDiemSet() {
+        return diemSet;
     }
 
-    public void setMaNd(String maNd) {
-        this.maNd = maNd;
+    public void setDiemSet(Set<Diem> diemSet) {
+        this.diemSet = diemSet;
     }
 
-    public String getMaCv() {
-        return maCv;
+    public Nguoidung getNguoidung() {
+        return nguoidung;
     }
 
-    public void setMaCv(String maCv) {
-        this.maCv = maCv;
+    public void setNguoidung(Nguoidung nguoidung) {
+        this.nguoidung = nguoidung;
     }
 
     @XmlTransient

@@ -8,6 +8,8 @@ import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  *
@@ -17,9 +19,12 @@ import javax.persistence.Embeddable;
 public class ChitiethoidongPK implements Serializable {
 
     @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 10)
     @Column(name = "ma_gv")
     private String maGv;
     @Basic(optional = false)
+    @NotNull
     @Column(name = "ma_hd")
     private int maHd;
 

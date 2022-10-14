@@ -11,8 +11,6 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -20,8 +18,11 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import org.hibernate.annotations.Type;
 
 /**
  *
@@ -40,19 +41,23 @@ public class Hoidong implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
+    @NotNull
     @Column(name = "ma_hd")
     private Integer maHd;
+    @Size(max = 200)
     @Column(name = "ten_hd")
     private String tenHd;
     @Column(name = "ngay_lap")
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     private Date ngayLap;
-    @Column(name = "tinh_tranghd")
-    private Short tinhTranghd;
+    @Column(name = "tinh_tranghd",columnDefinition = "TINYINT")
+    @Type(type = "org.hibernate.type.IntegerType")
+    private int tinhTranghd;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "hoidong")
     private Set<Chitiethoidong> chitiethoidongSet;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "hoidongMaHd")
+    private Set<Khoaluan> khoaluanSet;
 
     public Hoidong() {
     }
@@ -85,7 +90,7 @@ public class Hoidong implements Serializable {
         this.ngayLap = ngayLap;
     }
 
-    public Short getTinhTranghd() {
+    public int getTinhTranghd() {
         return tinhTranghd;
     }
 
@@ -100,6 +105,15 @@ public class Hoidong implements Serializable {
 
     public void setChitiethoidongSet(Set<Chitiethoidong> chitiethoidongSet) {
         this.chitiethoidongSet = chitiethoidongSet;
+    }
+
+    @XmlTransient
+    public Set<Khoaluan> getKhoaluanSet() {
+        return khoaluanSet;
+    }
+
+    public void setKhoaluanSet(Set<Khoaluan> khoaluanSet) {
+        this.khoaluanSet = khoaluanSet;
     }
 
     @Override

@@ -24,11 +24,14 @@ public interface NguoidungRepository extends JpaRepository<Nguoidung, NguoidungP
     @Query("SELECT n FROM Nguoidung n WHERE n.nguoidungPK.maNd = :#{#maNd}")
     Nguoidung findByMaNd(String maNd);
     
+    @Query("SELECT n FROM Nguoidung n WHERE n.username = :#{#username}")
+    Nguoidung findByUsername(String username);
+    
     
     @Modifying
     @Query("DELETE FROM Nguoidung n WHERE n.nguoidungPK.maNd = :#{#maNd}")
     void deleteByMaNd(@Param("maNd") String maNd);
     
     
-    Nguoidung findByUsername(String username);
+    
 }

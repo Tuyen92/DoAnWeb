@@ -5,14 +5,20 @@
 package com.demo.WebKhoaLuan.model;
 
 import java.io.Serializable;
+import java.util.Set;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -34,18 +40,29 @@ public class Khoa implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 10)
     @Column(name = "ma_khoa")
     private String maKhoa;
+    @Size(max = 100)
     @Column(name = "ten_khoa")
     private String tenKhoa;
+    @Size(max = 100)
     @Column(name = "van_phong")
     private String vanPhong;
+    @Size(max = 50)
     @Column(name = "email_khoa")
     private String emailKhoa;
+    @Size(max = 20)
     @Column(name = "sdt_khoa")
     private String sdtKhoa;
+    @Size(max = 100)
     @Column(name = "website")
     private String website;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "khoaMaKhoa")
+    private Set<Detai> detaiSet;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "khoa")
+    private Set<Nganh> nganhSet;
 
     public Khoa() {
     }
@@ -100,6 +117,24 @@ public class Khoa implements Serializable {
 
     public void setWebsite(String website) {
         this.website = website;
+    }
+
+    @XmlTransient
+    public Set<Detai> getDetaiSet() {
+        return detaiSet;
+    }
+
+    public void setDetaiSet(Set<Detai> detaiSet) {
+        this.detaiSet = detaiSet;
+    }
+
+    @XmlTransient
+    public Set<Nganh> getNganhSet() {
+        return nganhSet;
+    }
+
+    public void setNganhSet(Set<Nganh> nganhSet) {
+        this.nganhSet = nganhSet;
     }
 
     @Override

@@ -5,15 +5,20 @@
 package com.demo.WebKhoaLuan.model;
 
 import java.io.Serializable;
+import java.util.Set;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
-import org.springframework.security.core.GrantedAuthority;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -26,15 +31,20 @@ import org.springframework.security.core.GrantedAuthority;
     @NamedQuery(name = "Chucvu.findAll", query = "SELECT c FROM Chucvu c"),
     @NamedQuery(name = "Chucvu.findByMaCv", query = "SELECT c FROM Chucvu c WHERE c.maCv = :maCv"),
     @NamedQuery(name = "Chucvu.findByTenCv", query = "SELECT c FROM Chucvu c WHERE c.tenCv = :tenCv")})
-public class Chucvu implements GrantedAuthority {
+public class Chucvu implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 10)
     @Column(name = "ma_cv")
     private String maCv;
+    @Size(max = 100)
     @Column(name = "ten_cv")
     private String tenCv;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "chucvu")
+    private Set<Nguoidung> nguoidungSet;
 
     public Chucvu() {
     }
@@ -57,6 +67,15 @@ public class Chucvu implements GrantedAuthority {
 
     public void setTenCv(String tenCv) {
         this.tenCv = tenCv;
+    }
+
+    @XmlTransient
+    public Set<Nguoidung> getNguoidungSet() {
+        return nguoidungSet;
+    }
+
+    public void setNguoidungSet(Set<Nguoidung> nguoidungSet) {
+        this.nguoidungSet = nguoidungSet;
     }
 
     @Override
@@ -82,11 +101,6 @@ public class Chucvu implements GrantedAuthority {
     @Override
     public String toString() {
         return "com.demo.WebKhoaLuan.model.Chucvu[ maCv=" + maCv + " ]";
-    }
-
-    @Override
-    public String getAuthority() {
-        return maCv;
     }
     
 }

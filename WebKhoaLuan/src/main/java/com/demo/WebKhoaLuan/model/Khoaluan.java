@@ -6,15 +6,23 @@ package com.demo.WebKhoaLuan.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -33,32 +41,44 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Khoaluan.findByMaGvhd", query = "SELECT k FROM Khoaluan k WHERE k.maGvhd = :maGvhd"),
     @NamedQuery(name = "Khoaluan.findByMaGvpb", query = "SELECT k FROM Khoaluan k WHERE k.maGvpb = :maGvpb"),
     @NamedQuery(name = "Khoaluan.findByFileNop", query = "SELECT k FROM Khoaluan k WHERE k.fileNop = :fileNop"),
-    @NamedQuery(name = "Khoaluan.findByTinhTrangkl", query = "SELECT k FROM Khoaluan k WHERE k.tinhTrangkl = :tinhTrangkl"),
-    @NamedQuery(name = "Khoaluan.findByMaDk", query = "SELECT k FROM Khoaluan k WHERE k.khoaluanPK.maDk = :maDk"),
-    @NamedQuery(name = "Khoaluan.findByMaSv", query = "SELECT k FROM Khoaluan k WHERE k.khoaluanPK.maSv = :maSv"),
-    @NamedQuery(name = "Khoaluan.findByMaHd", query = "SELECT k FROM Khoaluan k WHERE k.khoaluanPK.maHd = :maHd")})
+    @NamedQuery(name = "Khoaluan.findByDangkykhoaluanMaDk", query = "SELECT k FROM Khoaluan k WHERE k.khoaluanPK.dangkykhoaluanMaDk = :dangkykhoaluanMaDk"),
+    @NamedQuery(name = "Khoaluan.findByDangkykhoaluanDetaiMaDt", query = "SELECT k FROM Khoaluan k WHERE k.khoaluanPK.dangkykhoaluanDetaiMaDt = :dangkykhoaluanDetaiMaDt")})
 public class Khoaluan implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected KhoaluanPK khoaluanPK;
+    @Size(max = 15)
     @Column(name = "nam")
     private String nam;
+    @Size(max = 100)
     @Column(name = "ghi_chu")
     private String ghiChu;
     @Column(name = "ngay_nop")
     @Temporal(TemporalType.TIMESTAMP)
     private Date ngayNop;
+    @Size(max = 10)
     @Column(name = "ma_sv2")
     private String maSv2;
+    @Size(max = 10)
     @Column(name = "ma_gvhd")
     private String maGvhd;
+    @Size(max = 10)
     @Column(name = "ma_gvpb")
     private String maGvpb;
+    @Size(max = 100)
     @Column(name = "file_nop")
     private String fileNop;
-    @Column(name = "tinh_trangkl")
-    private Short tinhTrangkl;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "khoaluan")
+    private Set<Diem> diemSet;
+    @JoinColumns({
+        @JoinColumn(name = "dangkykhoaluan_ma_dk", referencedColumnName = "ma_dk", insertable = false, updatable = false),
+        @JoinColumn(name = "dangkykhoaluan_detai_ma_dt", referencedColumnName = "detai_ma_dt", insertable = false, updatable = false)})
+    @ManyToOne(optional = false)
+    private Dangkykhoaluan dangkykhoaluan;
+    @JoinColumn(name = "hoidong_ma_hd", referencedColumnName = "ma_hd")
+    @ManyToOne(optional = false)
+    private Hoidong hoidongMaHd;
 
     public Khoaluan() {
     }
@@ -67,8 +87,8 @@ public class Khoaluan implements Serializable {
         this.khoaluanPK = khoaluanPK;
     }
 
-    public Khoaluan(int maKl, int maDk, String maSv, int maHd) {
-        this.khoaluanPK = new KhoaluanPK(maKl, maDk, maSv, maHd);
+    public Khoaluan(int maKl, int dangkykhoaluanMaDk, int dangkykhoaluanDetaiMaDt) {
+        this.khoaluanPK = new KhoaluanPK(maKl, dangkykhoaluanMaDk, dangkykhoaluanDetaiMaDt);
     }
 
     public KhoaluanPK getKhoaluanPK() {
@@ -135,12 +155,29 @@ public class Khoaluan implements Serializable {
         this.fileNop = fileNop;
     }
 
-    public Short getTinhTrangkl() {
-        return tinhTrangkl;
+    @XmlTransient
+    public Set<Diem> getDiemSet() {
+        return diemSet;
     }
 
-    public void setTinhTrangkl(Short tinhTrangkl) {
-        this.tinhTrangkl = tinhTrangkl;
+    public void setDiemSet(Set<Diem> diemSet) {
+        this.diemSet = diemSet;
+    }
+
+    public Dangkykhoaluan getDangkykhoaluan() {
+        return dangkykhoaluan;
+    }
+
+    public void setDangkykhoaluan(Dangkykhoaluan dangkykhoaluan) {
+        this.dangkykhoaluan = dangkykhoaluan;
+    }
+
+    public Hoidong getHoidongMaHd() {
+        return hoidongMaHd;
+    }
+
+    public void setHoidongMaHd(Hoidong hoidongMaHd) {
+        this.hoidongMaHd = hoidongMaHd;
     }
 
     @Override

@@ -6,16 +6,23 @@ package com.demo.WebKhoaLuan.model;
 
 import java.io.Serializable;
 import java.util.Date;
-import javax.persistence.Basic;
+import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import org.hibernate.annotations.Type;
 
 /**
  *
@@ -28,8 +35,9 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Dangkykhoaluan.findAll", query = "SELECT d FROM Dangkykhoaluan d"),
     @NamedQuery(name = "Dangkykhoaluan.findByMaDk", query = "SELECT d FROM Dangkykhoaluan d WHERE d.dangkykhoaluanPK.maDk = :maDk"),
     @NamedQuery(name = "Dangkykhoaluan.findByNgayDk", query = "SELECT d FROM Dangkykhoaluan d WHERE d.ngayDk = :ngayDk"),
-    @NamedQuery(name = "Dangkykhoaluan.findByMaDt", query = "SELECT d FROM Dangkykhoaluan d WHERE d.maDt = :maDt"),
-    @NamedQuery(name = "Dangkykhoaluan.findByMaSv", query = "SELECT d FROM Dangkykhoaluan d WHERE d.dangkykhoaluanPK.maSv = :maSv")})
+    @NamedQuery(name = "Dangkykhoaluan.findByDetaiMaDt", query = "SELECT d FROM Dangkykhoaluan d WHERE d.dangkykhoaluanPK.detaiMaDt = :detaiMaDt"),
+    @NamedQuery(name = "Dangkykhoaluan.findByMaSv", query = "SELECT d FROM Dangkykhoaluan d WHERE d.maSv = :maSv"),
+    @NamedQuery(name = "Dangkykhoaluan.findByXetDuyet", query = "SELECT d FROM Dangkykhoaluan d WHERE d.xetDuyet = :xetDuyet")})
 public class Dangkykhoaluan implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -38,9 +46,17 @@ public class Dangkykhoaluan implements Serializable {
     @Column(name = "ngay_dk")
     @Temporal(TemporalType.TIMESTAMP)
     private Date ngayDk;
-    @Basic(optional = false)
-    @Column(name = "ma_dt")
-    private String maDt;
+    @Size(max = 10)
+    @Column(name = "ma_sv")
+    private String maSv;
+    @Column(name = "xet_duyet",columnDefinition = "TINYINT")
+    @Type(type = "org.hibernate.type.IntegerType")
+    private int xetDuyet;
+    @JoinColumn(name = "detai_ma_dt", referencedColumnName = "ma_dt", insertable = false, updatable = false)
+    @ManyToOne(optional = false)
+    private Detai detai;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "dangkykhoaluan")
+    private Set<Khoaluan> khoaluanSet;
 
     public Dangkykhoaluan() {
     }
@@ -49,13 +65,8 @@ public class Dangkykhoaluan implements Serializable {
         this.dangkykhoaluanPK = dangkykhoaluanPK;
     }
 
-    public Dangkykhoaluan(DangkykhoaluanPK dangkykhoaluanPK, String maDt) {
-        this.dangkykhoaluanPK = dangkykhoaluanPK;
-        this.maDt = maDt;
-    }
-
-    public Dangkykhoaluan(int maDk, String maSv) {
-        this.dangkykhoaluanPK = new DangkykhoaluanPK(maDk, maSv);
+    public Dangkykhoaluan(int maDk, int detaiMaDt) {
+        this.dangkykhoaluanPK = new DangkykhoaluanPK(maDk, detaiMaDt);
     }
 
     public DangkykhoaluanPK getDangkykhoaluanPK() {
@@ -74,12 +85,37 @@ public class Dangkykhoaluan implements Serializable {
         this.ngayDk = ngayDk;
     }
 
-    public String getMaDt() {
-        return maDt;
+    public String getMaSv() {
+        return maSv;
     }
 
-    public void setMaDt(String maDt) {
-        this.maDt = maDt;
+    public void setMaSv(String maSv) {
+        this.maSv = maSv;
+    }
+
+    public int getXetDuyet() {
+        return xetDuyet;
+    }
+
+    public void setXetDuyet(Short xetDuyet) {
+        this.xetDuyet = xetDuyet;
+    }
+
+    public Detai getDetai() {
+        return detai;
+    }
+
+    public void setDetai(Detai detai) {
+        this.detai = detai;
+    }
+
+    @XmlTransient
+    public Set<Khoaluan> getKhoaluanSet() {
+        return khoaluanSet;
+    }
+
+    public void setKhoaluanSet(Set<Khoaluan> khoaluanSet) {
+        this.khoaluanSet = khoaluanSet;
     }
 
     @Override

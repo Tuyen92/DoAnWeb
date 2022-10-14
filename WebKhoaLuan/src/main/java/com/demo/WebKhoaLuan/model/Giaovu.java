@@ -9,9 +9,14 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -24,36 +29,30 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "Giaovu.findAll", query = "SELECT g FROM Giaovu g"),
     @NamedQuery(name = "Giaovu.findByMaGvu", query = "SELECT g FROM Giaovu g WHERE g.maGvu = :maGvu"),
-    @NamedQuery(name = "Giaovu.findByPhongBan", query = "SELECT g FROM Giaovu g WHERE g.phongBan = :phongBan"),
-    @NamedQuery(name = "Giaovu.findByMaNd", query = "SELECT g FROM Giaovu g WHERE g.maNd = :maNd"),
-    @NamedQuery(name = "Giaovu.findByMaCv", query = "SELECT g FROM Giaovu g WHERE g.maCv = :maCv")})
+    @NamedQuery(name = "Giaovu.findByPhongBan", query = "SELECT g FROM Giaovu g WHERE g.phongBan = :phongBan")})
 public class Giaovu implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 10)
     @Column(name = "ma_gvu")
     private String maGvu;
+    @Size(max = 50)
     @Column(name = "phong_ban")
     private String phongBan;
-    @Basic(optional = false)
-    @Column(name = "ma_nd")
-    private String maNd;
-    @Basic(optional = false)
-    @Column(name = "ma_cv")
-    private String maCv;
+    @JoinColumns({
+        @JoinColumn(name = "nguoidung_ma_nd", referencedColumnName = "ma_nd"),
+        @JoinColumn(name = "nguoidung_chucvu_ma_cv", referencedColumnName = "chucvu_ma_cv")})
+    @ManyToOne(optional = false)
+    private Nguoidung nguoidung;
 
     public Giaovu() {
     }
 
     public Giaovu(String maGvu) {
         this.maGvu = maGvu;
-    }
-
-    public Giaovu(String maGvu, String maNd, String maCv) {
-        this.maGvu = maGvu;
-        this.maNd = maNd;
-        this.maCv = maCv;
     }
 
     public String getMaGvu() {
@@ -72,20 +71,12 @@ public class Giaovu implements Serializable {
         this.phongBan = phongBan;
     }
 
-    public String getMaNd() {
-        return maNd;
+    public Nguoidung getNguoidung() {
+        return nguoidung;
     }
 
-    public void setMaNd(String maNd) {
-        this.maNd = maNd;
-    }
-
-    public String getMaCv() {
-        return maCv;
-    }
-
-    public void setMaCv(String maCv) {
-        this.maCv = maCv;
+    public void setNguoidung(Nguoidung nguoidung) {
+        this.nguoidung = nguoidung;
     }
 
     @Override
