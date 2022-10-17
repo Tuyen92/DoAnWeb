@@ -20,7 +20,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author PC
+ * @author ADMIN
  */
 @Entity
 @Table(name = "diem")

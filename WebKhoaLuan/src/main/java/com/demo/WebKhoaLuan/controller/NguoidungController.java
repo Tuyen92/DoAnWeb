@@ -33,6 +33,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class NguoidungController {
     @Autowired
     private NguoidungRepository nguoidungRepository;
+    @Autowired
+    private SinhvienRepository sinhVienRepository;
+    @Autowired
+    private GiangvienRepository giangVienRepository;
+    @Autowired
+    private GiaovuRepository giaoVuRepository;
+    @Autowired
+    private QuantriRepository quanTriRepository;
     
 //    @Autowired
 //    private AuthenticationManager authenticationManager;
@@ -61,24 +69,157 @@ public class NguoidungController {
 //    }
 
     
-    @PostMapping("/quantri/add")
+    //QUẢN TRỊ
+    @PostMapping("/quantri/themND")
     public Nguoidung themNguoidung(@RequestBody Nguoidung nguoidung){
+        nguoidung.setHoatDong(Short.parseShort("1"));
+        switch (nguoidung.getNguoidungPK().getChucvuMaCv()) {
+            case "ROLE_QT":
+                Quantri qt = new Quantri();
+                qt.setNguoidung(nguoidung);
+                qt.setMaQt(nguoidung.getNguoidungPK().getMaNd());
+                quanTriRepository.save(qt);
+                break;
+            case "ROLE_GVU":
+                Giaovu gvu = new Giaovu();
+                gvu.setNguoidung(nguoidung);
+                gvu.setMaGvu(nguoidung.getNguoidungPK().getMaNd());
+                giaoVuRepository.save(gvu);
+                break;
+            case "ROLE_GV":
+                Giangvien gv = new Giangvien();
+                gv.setNguoidung(nguoidung);
+                gv.setMaGv(nguoidung.getNguoidungPK().getMaNd());
+                giangVienRepository.save(gv);
+                break;
+            case "ROLE_SV":
+                Sinhvien sv = new Sinhvien();
+                sv.setNguoidung(nguoidung);
+                sv.setMaSv(nguoidung.getNguoidungPK().getMaNd());
+                sinhVienRepository.save(sv);
+                break;
+            default:
+                throw new AssertionError();
+        } 
         return nguoidungRepository.save(nguoidung);
     }
     
-    @GetMapping("/quantri/QLTaiKhoan")
+    @GetMapping("/quantri/qlTaiKhoan")
     public List<Nguoidung> layDSNguoidung(){
         return nguoidungRepository.findAll();
     }
     
-    @GetMapping("/nguoidung/{maNd}")
-    public Nguoidung layNguoidung(@PathVariable(value = "maNd") String maNd){
-        return nguoidungRepository.findByMaNd(maNd);
+    @GetMapping("/quantri/qlTaiKhoan/{maNd}")
+    public Nguoidung timNguoidung(@PathVariable(value = "maNd") String maNd){
+        return nguoidungRepository.layND(maNd);
     }
     
-    @DeleteMapping("nguoidung/{maNd}")
-    public void xoaNguoidung(@PathVariable (value = "maNd") String maNd){
-        nguoidungRepository.deleteByMaNd(maNd);
+    @GetMapping("/nguoidung/{maNd}")
+    public Nguoidung layNguoidung(@PathVariable(value = "maNd") String maNd){
+        return nguoidungRepository.layND(maNd);
     }
-       
+    
+    @GetMapping("/quantri/qlTaiKhoan/loai/{maCv}")
+    public List<Nguoidung> layDSLoaiND(@PathVariable(value = "maCv") String maCv){
+        return nguoidungRepository.layLoaiND(maCv);
+    }
+    
+    @DeleteMapping("/quantri/xoaND/{maNd}")
+    public String xoaNguoidung(@PathVariable(value = "maNd") String maNd){
+        Nguoidung nd = nguoidungRepository.layND(maNd);
+        switch (nd.getNguoidungPK().getChucvuMaCv()) {
+            case "ROLE_QT":
+                quanTriRepository.deleteById(maNd);
+                break;
+            case "ROLE_GVU":
+                giaoVuRepository.deleteById(maNd);
+                break;
+            case "ROLE_GV":
+                giangVienRepository.deleteById(maNd);
+                break;
+            case "ROLE_SV":
+                sinhVienRepository.deleteById(maNd);
+                break;
+        }
+        try {
+            nguoidungRepository.deleteByMaNd(maNd);
+        } catch (Exception e) {
+            return "Xóa người dùng không thành công";
+        }
+        return "Đã xóa ngời dùng thành công";
+    }
+    
+    @PostMapping("/quantri/capnhatND/{maNd}")
+    public String capNhatND(@PathVariable (value = "maNd") String maNd, @RequestBody Nguoidung nguoidung) {
+        Nguoidung nd = nguoidungRepository.layND(maNd);
+        if (!nguoidung.getHo().isEmpty())
+            nd.setHo(nguoidung.getHo());
+        if (!nguoidung.getTen().isEmpty())
+            nd.setTen(nguoidung.getTen());
+        if (nguoidung.getNgaySinh() != null)
+            nd.setNgaySinh(nguoidung.getNgaySinh());
+        if (!nguoidung.getDiaChi().isEmpty())
+            nd.setDiaChi(nguoidung.getDiaChi());
+        if (!nguoidung.getEmail().isEmpty())
+            nd.setEmail(nguoidung.getEmail());
+        if (!nguoidung.getGioiTinh().isEmpty())
+            nd.setGioiTinh(nguoidung.getGioiTinh());
+        if (!nguoidung.getSdt().isEmpty())
+            nd.setSdt(nguoidung.getSdt());
+        try {
+            nguoidungRepository.save(nd);
+        } catch (Exception e) {
+            return "Cập nhật người dùng không thành công";
+        }
+        return "Cập nhật người dùng thành công";
+    }
+    
+    @PostMapping("/capnhatND/{maNd}")
+    public String capNhatNDCaNhan(@PathVariable(value = "maNd") String maNd, @RequestBody Nguoidung nguoidung){
+        Nguoidung nd = nguoidungRepository.layND(maNd);
+        if (nguoidung.getNgaySinh() != null)
+            nd.setNgaySinh(nguoidung.getNgaySinh());
+        if (!nguoidung.getDiaChi().isEmpty())
+            nd.setDiaChi(nguoidung.getDiaChi());
+        if (!nguoidung.getEmail().isEmpty())
+            nd.setEmail(nguoidung.getEmail());
+        if (!nguoidung.getSdt().isEmpty())
+            nd.setSdt(nguoidung.getSdt());
+        try {
+            nguoidungRepository.save(nd);
+        } catch (Exception e) {
+           return "Cập nhật người dùng không thành công"; 
+        }
+        return "Cập nhật người dùng thành công";
+    }
+    
+    @PostMapping("/quantri/tinhTrangTK/{maNd}")
+    public void capNhatTinhTrang(@PathVariable(value = "maNd") String maNd){
+        Nguoidung nd = nguoidungRepository.layND(maNd);
+        if (nd.getHoatDong() == 1)
+            nd.setHoatDong(Short.parseShort("0"));
+        else
+            nd.setHoatDong(Short.parseShort("1"));
+        nguoidungRepository.save(nd);
+    }
+    
+    @GetMapping("/quantri/dsSVKhoa/{maKhoa}")
+    public List<Sinhvien> dsSinhVienKhoa(@PathVariable(value = "maKhoa") String maKhoa){
+        return sinhVienRepository.laySVKhoa(maKhoa);
+    }
+    
+    @GetMapping("/quantri/dsSVNganh/{maNganh}")
+    public List<Sinhvien> dsSinhVienNganh(@PathVariable(value = "maNganh") String maNganh){
+        return sinhVienRepository.laySVNganh(maNganh);
+    }
+    
+    @GetMapping("/quantri/dsTaiKhoanVHH")
+    public List<Nguoidung> dsTaiKhoanVHH(){
+        return nguoidungRepository.layDSHoatDong(Short.parseShort("0"));
+    }
+    
+    @GetMapping("/quantri/dsTaiKhoanHLH")
+    public List<Nguoidung> dsTaiKhoanHLH(){
+        return nguoidungRepository.layDSHoatDong(Short.parseShort("1"));
+    }
 }

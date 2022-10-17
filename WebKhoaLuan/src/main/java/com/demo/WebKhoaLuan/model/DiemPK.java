@@ -13,7 +13,7 @@ import javax.validation.constraints.Size;
 
 /**
  *
- * @author PC
+ * @author ADMIN
  */
 @Embeddable
 public class DiemPK implements Serializable {

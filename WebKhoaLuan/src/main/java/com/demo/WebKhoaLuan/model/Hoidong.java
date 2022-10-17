@@ -4,6 +4,7 @@
  */
 package com.demo.WebKhoaLuan.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
@@ -12,9 +13,11 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -22,12 +25,12 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
-import org.hibernate.annotations.Type;
 
 /**
  *
- * @author PC
+ * @author ADMIN
  */
+@JsonIgnoreProperties({"khoaluanSet", "chitiethoidongSet"})
 @Entity
 @Table(name = "hoidong")
 @XmlRootElement
@@ -39,23 +42,23 @@ import org.hibernate.annotations.Type;
     @NamedQuery(name = "Hoidong.findByTinhTranghd", query = "SELECT h FROM Hoidong h WHERE h.tinhTranghd = :tinhTranghd")})
 public class Hoidong implements Serializable {
 
+    @Size(max = 200)
+    @Column(name = "ten_hd")
+    private String tenHd;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "hoidong")
+    private Set<Chitiethoidong> chitiethoidongSet;
+
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
     @NotNull
     @Column(name = "ma_hd")
     private Integer maHd;
-    @Size(max = 200)
-    @Column(name = "ten_hd")
-    private String tenHd;
     @Column(name = "ngay_lap")
     @Temporal(TemporalType.DATE)
     private Date ngayLap;
-    @Column(name = "tinh_tranghd",columnDefinition = "TINYINT")
-    @Type(type = "org.hibernate.type.IntegerType")
-    private int tinhTranghd;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "hoidong")
-    private Set<Chitiethoidong> chitiethoidongSet;
+    @Column(name = "tinh_tranghd")
+    private Short tinhTranghd;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "hoidongMaHd")
     private Set<Khoaluan> khoaluanSet;
 
@@ -90,7 +93,7 @@ public class Hoidong implements Serializable {
         this.ngayLap = ngayLap;
     }
 
-    public int getTinhTranghd() {
+    public Short getTinhTranghd() {
         return tinhTranghd;
     }
 
@@ -98,15 +101,14 @@ public class Hoidong implements Serializable {
         this.tinhTranghd = tinhTranghd;
     }
 
-    @XmlTransient
-    public Set<Chitiethoidong> getChitiethoidongSet() {
-        return chitiethoidongSet;
-    }
-
-    public void setChitiethoidongSet(Set<Chitiethoidong> chitiethoidongSet) {
-        this.chitiethoidongSet = chitiethoidongSet;
-    }
-
+//    public Chitiethoidong getChitiethoidong() {
+//        return chitiethoidong;
+//    }
+//
+//    public void setChitiethoidong(Chitiethoidong chitiethoidong) {
+//        this.chitiethoidong = chitiethoidong;
+//    }
+//
     @XmlTransient
     public Set<Khoaluan> getKhoaluanSet() {
         return khoaluanSet;
@@ -139,6 +141,15 @@ public class Hoidong implements Serializable {
     @Override
     public String toString() {
         return "com.demo.WebKhoaLuan.model.Hoidong[ maHd=" + maHd + " ]";
+    }
+
+    @XmlTransient
+    public Set<Chitiethoidong> getChitiethoidongSet() {
+        return chitiethoidongSet;
+    }
+
+    public void setChitiethoidongSet(Set<Chitiethoidong> chitiethoidongSet) {
+        this.chitiethoidongSet = chitiethoidongSet;
     }
     
 }

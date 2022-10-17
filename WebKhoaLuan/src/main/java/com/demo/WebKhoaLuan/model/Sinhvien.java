@@ -18,11 +18,10 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
-import org.hibernate.annotations.Type;
 
 /**
  *
- * @author PC
+ * @author ADMIN
  */
 @Entity
 @Table(name = "sinhvien")
@@ -44,12 +43,10 @@ public class Sinhvien implements Serializable {
     @Size(max = 20)
     @Column(name = "nien_khoa")
     private String nienKhoa;
-    @Column(name = "tinh_trang",columnDefinition = "TINYINT")
-    @Type(type = "org.hibernate.type.IntegerType")
-    private int tinhTrang;
+    @Column(name = "tinh_trang")
+    private Short tinhTrang;
     @JoinColumns({
         @JoinColumn(name = "nganh_ma_nganh", referencedColumnName = "ma_nganh"),
-        @JoinColumn(name = "nganh_ma_khoa", referencedColumnName = "ma_khoa"),
         @JoinColumn(name = "nganh_khoa_ma_khoa", referencedColumnName = "khoa_ma_khoa")})
     @ManyToOne(optional = false)
     private Nganh nganh;
@@ -82,11 +79,11 @@ public class Sinhvien implements Serializable {
         this.nienKhoa = nienKhoa;
     }
 
-    public int getTinhTrang() {
+    public Short getTinhTrang() {
         return tinhTrang;
     }
 
-    public void setTinhTrang(int tinhTrang) {
+    public void setTinhTrang(Short tinhTrang) {
         this.tinhTrang = tinhTrang;
     }
 

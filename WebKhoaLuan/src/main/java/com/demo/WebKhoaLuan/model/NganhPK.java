@@ -13,7 +13,7 @@ import javax.validation.constraints.Size;
 
 /**
  *
- * @author PC
+ * @author ADMIN
  */
 @Embeddable
 public class NganhPK implements Serializable {
@@ -26,20 +26,14 @@ public class NganhPK implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 10)
-    @Column(name = "ma_khoa")
-    private String maKhoa;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 10)
     @Column(name = "khoa_ma_khoa")
     private String khoaMaKhoa;
 
     public NganhPK() {
     }
 
-    public NganhPK(String maNganh, String maKhoa, String khoaMaKhoa) {
+    public NganhPK(String maNganh, String khoaMaKhoa) {
         this.maNganh = maNganh;
-        this.maKhoa = maKhoa;
         this.khoaMaKhoa = khoaMaKhoa;
     }
 
@@ -49,14 +43,6 @@ public class NganhPK implements Serializable {
 
     public void setMaNganh(String maNganh) {
         this.maNganh = maNganh;
-    }
-
-    public String getMaKhoa() {
-        return maKhoa;
-    }
-
-    public void setMaKhoa(String maKhoa) {
-        this.maKhoa = maKhoa;
     }
 
     public String getKhoaMaKhoa() {
@@ -71,7 +57,6 @@ public class NganhPK implements Serializable {
     public int hashCode() {
         int hash = 0;
         hash += (maNganh != null ? maNganh.hashCode() : 0);
-        hash += (maKhoa != null ? maKhoa.hashCode() : 0);
         hash += (khoaMaKhoa != null ? khoaMaKhoa.hashCode() : 0);
         return hash;
     }
@@ -86,9 +71,6 @@ public class NganhPK implements Serializable {
         if ((this.maNganh == null && other.maNganh != null) || (this.maNganh != null && !this.maNganh.equals(other.maNganh))) {
             return false;
         }
-        if ((this.maKhoa == null && other.maKhoa != null) || (this.maKhoa != null && !this.maKhoa.equals(other.maKhoa))) {
-            return false;
-        }
         if ((this.khoaMaKhoa == null && other.khoaMaKhoa != null) || (this.khoaMaKhoa != null && !this.khoaMaKhoa.equals(other.khoaMaKhoa))) {
             return false;
         }
@@ -97,7 +79,7 @@ public class NganhPK implements Serializable {
 
     @Override
     public String toString() {
-        return "com.demo.WebKhoaLuan.model.NganhPK[ maNganh=" + maNganh + ", maKhoa=" + maKhoa + ", khoaMaKhoa=" + khoaMaKhoa + " ]";
+        return "com.demo.WebKhoaLuan.model.NganhPK[ maNganh=" + maNganh + ", khoaMaKhoa=" + khoaMaKhoa + " ]";
     }
     
 }

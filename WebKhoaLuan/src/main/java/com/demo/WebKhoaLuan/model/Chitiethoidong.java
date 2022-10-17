@@ -4,6 +4,7 @@
  */
 package com.demo.WebKhoaLuan.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -12,14 +13,16 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author PC
+ * @author ADMIN
  */
+@JsonIgnoreProperties({"giangvien"})
 @Entity
 @Table(name = "chitiethoidong")
 @XmlRootElement
@@ -30,19 +33,19 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Chitiethoidong.findByChucVuhd", query = "SELECT c FROM Chitiethoidong c WHERE c.chucVuhd = :chucVuhd")})
 public class Chitiethoidong implements Serializable {
 
+    @Size(max = 45)
+    @Column(name = "chuc_vuhd")
+    private String chucVuhd;
+    @JoinColumn(name = "giangvien_ma_gv", referencedColumnName = "ma_gv", insertable = false, updatable = false)
+    @ManyToOne(optional = false)
+    private Giangvien giangvien;
+    @JoinColumn(name = "hoidong_ma_hd", referencedColumnName = "ma_hd", insertable = false, updatable = false)
+    @ManyToOne(optional = false)
+    private Hoidong hoidong;
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected ChitiethoidongPK chitiethoidongPK;
-    @Size(max = 100)
-    @Column(name = "chuc_vuhd")
-    private String chucVuhd;
-    @JoinColumn(name = "ma_gv", referencedColumnName = "ma_gv", insertable = false, updatable = false)
-    @ManyToOne(optional = false)
-    private Giangvien giangvien;
-    @JoinColumn(name = "ma_hd", referencedColumnName = "ma_hd", insertable = false, updatable = false)
-    @ManyToOne(optional = false)
-    private Hoidong hoidong;
-
+   
     public Chitiethoidong() {
     }
 
@@ -109,6 +112,5 @@ public class Chitiethoidong implements Serializable {
     @Override
     public String toString() {
         return "com.demo.WebKhoaLuan.model.Chitiethoidong[ chitiethoidongPK=" + chitiethoidongPK + " ]";
-    }
-    
+    }    
 }

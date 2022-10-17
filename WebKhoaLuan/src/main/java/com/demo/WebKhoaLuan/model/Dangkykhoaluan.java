@@ -4,6 +4,7 @@
  */
 package com.demo.WebKhoaLuan.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
@@ -22,12 +23,12 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
-import org.hibernate.annotations.Type;
 
 /**
  *
- * @author PC
+ * @author ADMIN
  */
+@JsonIgnoreProperties({"khoaluanSet"})
 @Entity
 @Table(name = "dangkykhoaluan")
 @XmlRootElement
@@ -49,9 +50,8 @@ public class Dangkykhoaluan implements Serializable {
     @Size(max = 10)
     @Column(name = "ma_sv")
     private String maSv;
-    @Column(name = "xet_duyet",columnDefinition = "TINYINT")
-    @Type(type = "org.hibernate.type.IntegerType")
-    private int xetDuyet;
+    @Column(name = "xet_duyet")
+    private Short xetDuyet;
     @JoinColumn(name = "detai_ma_dt", referencedColumnName = "ma_dt", insertable = false, updatable = false)
     @ManyToOne(optional = false)
     private Detai detai;
@@ -93,7 +93,7 @@ public class Dangkykhoaluan implements Serializable {
         this.maSv = maSv;
     }
 
-    public int getXetDuyet() {
+    public Short getXetDuyet() {
         return xetDuyet;
     }
 

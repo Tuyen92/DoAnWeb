@@ -4,6 +4,7 @@
  */
 package com.demo.WebKhoaLuan.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
 import java.util.Set;
 import javax.persistence.CascadeType;
@@ -22,8 +23,9 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author PC
+ * @author ADMIN
  */
+@JsonIgnoreProperties({"sinhvienSet"})
 @Entity
 @Table(name = "nganh")
 @XmlRootElement
@@ -32,7 +34,6 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Nganh.findByMaNganh", query = "SELECT n FROM Nganh n WHERE n.nganhPK.maNganh = :maNganh"),
     @NamedQuery(name = "Nganh.findByTenNganh", query = "SELECT n FROM Nganh n WHERE n.tenNganh = :tenNganh"),
     @NamedQuery(name = "Nganh.findByThongTin", query = "SELECT n FROM Nganh n WHERE n.thongTin = :thongTin"),
-    @NamedQuery(name = "Nganh.findByMaKhoa", query = "SELECT n FROM Nganh n WHERE n.nganhPK.maKhoa = :maKhoa"),
     @NamedQuery(name = "Nganh.findByKhoaMaKhoa", query = "SELECT n FROM Nganh n WHERE n.nganhPK.khoaMaKhoa = :khoaMaKhoa")})
 public class Nganh implements Serializable {
 
@@ -58,8 +59,8 @@ public class Nganh implements Serializable {
         this.nganhPK = nganhPK;
     }
 
-    public Nganh(String maNganh, String maKhoa, String khoaMaKhoa) {
-        this.nganhPK = new NganhPK(maNganh, maKhoa, khoaMaKhoa);
+    public Nganh(String maNganh, String khoaMaKhoa) {
+        this.nganhPK = new NganhPK(maNganh, khoaMaKhoa);
     }
 
     public NganhPK getNganhPK() {

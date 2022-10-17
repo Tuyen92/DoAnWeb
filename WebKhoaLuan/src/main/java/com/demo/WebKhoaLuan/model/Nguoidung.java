@@ -4,8 +4,8 @@
  */
 package com.demo.WebKhoaLuan.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Date;
 import java.util.Set;
 import javax.persistence.CascadeType;
@@ -23,14 +23,12 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
-import org.hibernate.annotations.Type;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 /**
  *
- * @author PC
+ * @author ADMIN
  */
+@JsonIgnoreProperties({"quantriSet", "giaovuSet", "giangvienSet", "sinhvienSet"})
 @Entity
 @Table(name = "nguoidung")
 @XmlRootElement
@@ -49,11 +47,8 @@ import org.springframework.security.core.userdetails.UserDetails;
     @NamedQuery(name = "Nguoidung.findByAnh", query = "SELECT n FROM Nguoidung n WHERE n.anh = :anh"),
     @NamedQuery(name = "Nguoidung.findByHoatDong", query = "SELECT n FROM Nguoidung n WHERE n.hoatDong = :hoatDong"),
     @NamedQuery(name = "Nguoidung.findByChucvuMaCv", query = "SELECT n FROM Nguoidung n WHERE n.nguoidungPK.chucvuMaCv = :chucvuMaCv")})
-public class Nguoidung implements Serializable  {
+public class Nguoidung implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-    @EmbeddedId
-    protected NguoidungPK nguoidungPK;
     @Size(max = 50)
     @Column(name = "ho")
     private String ho;
@@ -63,9 +58,6 @@ public class Nguoidung implements Serializable  {
     @Size(max = 5)
     @Column(name = "gioi_tinh")
     private String gioiTinh;
-    @Column(name = "ngay_sinh")
-    @Temporal(TemporalType.DATE)
-    private Date ngaySinh;
     @Size(max = 100)
     @Column(name = "dia_chi")
     private String diaChi;
@@ -85,9 +77,15 @@ public class Nguoidung implements Serializable  {
     @Size(max = 100)
     @Column(name = "anh")
     private String anh;
-    @Column(name = "hoat_dong",columnDefinition = "TINYINT")
-    @Type(type = "org.hibernate.type.IntegerType")
-    private int hoatDong;
+
+    private static final long serialVersionUID = 1L;
+    @EmbeddedId
+    protected NguoidungPK nguoidungPK;
+    @Column(name = "ngay_sinh")
+    @Temporal(TemporalType.DATE)
+    private Date ngaySinh;
+    @Column(name = "hoat_dong")
+    private Short hoatDong;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "nguoidung")
     private Set<Quantri> quantriSet;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "nguoidung")
@@ -119,21 +117,6 @@ public class Nguoidung implements Serializable  {
         this.nguoidungPK = nguoidungPK;
     }
 
-    public String getHo() {
-        return ho;
-    }
-
-    public void setHo(String ho) {
-        this.ho = ho;
-    }
-
-    public String getTen() {
-        return ten;
-    }
-
-    public void setTen(String ten) {
-        this.ten = ten;
-    }
 
     public String getGioiTinh() {
         return gioiTinh;
@@ -159,47 +142,8 @@ public class Nguoidung implements Serializable  {
         this.diaChi = diaChi;
     }
 
-    public String getSdt() {
-        return sdt;
-    }
 
-    public void setSdt(String sdt) {
-        this.sdt = sdt;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String GetUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String GetPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getAnh() {
-        return anh;
-    }
-
-    public void setAnh(String anh) {
-        this.anh = anh;
-    }
-
-    public int getHoatDong() {
+    public Short getHoatDong() {
         return hoatDong;
     }
 
@@ -275,4 +219,61 @@ public class Nguoidung implements Serializable  {
     public String toString() {
         return "com.demo.WebKhoaLuan.model.Nguoidung[ nguoidungPK=" + nguoidungPK + " ]";
     }
+
+    public String getHo() {
+        return ho;
+    }
+
+    public void setHo(String ho) {
+        this.ho = ho;
+    }
+
+    public String getTen() {
+        return ten;
+    }
+
+    public void setTen(String ten) {
+        this.ten = ten;
+    }
+    
+    public String getSdt() {
+        return sdt;
+    }
+
+    public void setSdt(String sdt) {
+        this.sdt = sdt;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getAnh() {
+        return anh;
+    }
+
+    public void setAnh(String anh) {
+        this.anh = anh;
+    }
+    
 }

@@ -4,6 +4,7 @@
  */
 package com.demo.WebKhoaLuan.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
@@ -26,8 +27,9 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author PC
+ * @author ADMIN
  */
+@JsonIgnoreProperties({"diemSet"})
 @Entity
 @Table(name = "khoaluan")
 @XmlRootElement
