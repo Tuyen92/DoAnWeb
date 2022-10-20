@@ -7,8 +7,16 @@ package com.demo.WebKhoaLuan.controller;
 //import com.demo.WebKhoaLuan.config.JWTToken;
 //import com.demo.WebKhoaLuan.login.LoginRequest;
 //import com.demo.WebKhoaLuan.login.LoginResponse;
+import com.demo.WebKhoaLuan.model.Giangvien;
+import com.demo.WebKhoaLuan.model.Giaovu;
 import com.demo.WebKhoaLuan.model.Nguoidung;
+import com.demo.WebKhoaLuan.model.Quantri;
+import com.demo.WebKhoaLuan.model.Sinhvien;
+import com.demo.WebKhoaLuan.repository.GiangvienRepository;
+import com.demo.WebKhoaLuan.repository.GiaovuRepository;
 import com.demo.WebKhoaLuan.repository.NguoidungRepository;
+import com.demo.WebKhoaLuan.repository.QuantriRepository;
+import com.demo.WebKhoaLuan.repository.SinhvienRepository;
 import java.util.List;
 //import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,12 +75,11 @@ public class NguoidungController {
 //        String jwt = tokenProvider.generateToken((Nguoidung) authentication.getPrincipal());
 //        return new LoginResponse(jwt);
 //    }
-
-    
+   
     //QUẢN TRỊ
     @PostMapping("/quantri/themND")
     public Nguoidung themNguoidung(@RequestBody Nguoidung nguoidung){
-        nguoidung.setHoatDong(Short.parseShort("1"));
+        nguoidung.setHoatDong(1);
         switch (nguoidung.getNguoidungPK().getChucvuMaCv()) {
             case "ROLE_QT":
                 Quantri qt = new Quantri();
@@ -197,9 +204,9 @@ public class NguoidungController {
     public void capNhatTinhTrang(@PathVariable(value = "maNd") String maNd){
         Nguoidung nd = nguoidungRepository.layND(maNd);
         if (nd.getHoatDong() == 1)
-            nd.setHoatDong(Short.parseShort("0"));
+            nd.setHoatDong(0);
         else
-            nd.setHoatDong(Short.parseShort("1"));
+            nd.setHoatDong(1);
         nguoidungRepository.save(nd);
     }
     

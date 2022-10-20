@@ -18,7 +18,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -40,15 +39,6 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Giangvien.findByHocHam", query = "SELECT g FROM Giangvien g WHERE g.hocHam = :hocHam")})
 public class Giangvien implements Serializable {
 
-    @Size(max = 250)
-    @Column(name = "hoc_vi")
-    private String hocVi;
-    @Size(max = 100)
-    @Column(name = "hoc_ham")
-    private String hocHam;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "giangvien")
-    private Set<Chitiethoidong> chitiethoidongSet;
-
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -56,6 +46,12 @@ public class Giangvien implements Serializable {
     @Size(min = 1, max = 10)
     @Column(name = "ma_gv")
     private String maGv;
+    @Size(max = 250)
+    @Column(name = "hoc_vi")
+    private String hocVi;
+    @Size(max = 100)
+    @Column(name = "hoc_ham")
+    private String hocHam;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "giangvien")
     private Set<Diem> diemSet;
     @JoinColumns({
@@ -63,6 +59,8 @@ public class Giangvien implements Serializable {
         @JoinColumn(name = "nguoidung_chucvu_ma_cv", referencedColumnName = "chucvu_ma_cv")})
     @ManyToOne(optional = false)
     private Nguoidung nguoidung;
+//    @OneToMany(cascade = CascadeType.ALL, mappedBy = "giangvien")
+//    private Set<Chitiethoidong> chitiethoidongSet;
 
     public Giangvien() {
     }
@@ -112,12 +110,13 @@ public class Giangvien implements Serializable {
         this.nguoidung = nguoidung;
     }
 
-//    public Chitiethoidong getChitiethoidong() {
-//        return chitiethoidong;
+//    @XmlTransient
+//    public Set<Chitiethoidong> getChitiethoidongSet() {
+//        return chitiethoidongSet;
 //    }
 //
-//    public void setChitiethoidong(Chitiethoidong chitiethoidong) {
-//        this.chitiethoidong = chitiethoidong;
+//    public void setChitiethoidongSet(Set<Chitiethoidong> chitiethoidongSet) {
+//        this.chitiethoidongSet = chitiethoidongSet;
 //    }
 
     @Override
@@ -143,15 +142,6 @@ public class Giangvien implements Serializable {
     @Override
     public String toString() {
         return "com.demo.WebKhoaLuan.model.Giangvien[ maGv=" + maGv + " ]";
-    }
-
-    @XmlTransient
-    public Set<Chitiethoidong> getChitiethoidongSet() {
-        return chitiethoidongSet;
-    }
-
-    public void setChitiethoidongSet(Set<Chitiethoidong> chitiethoidongSet) {
-        this.chitiethoidongSet = chitiethoidongSet;
     }
     
 }

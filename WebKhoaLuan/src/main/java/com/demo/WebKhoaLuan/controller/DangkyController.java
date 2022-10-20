@@ -62,7 +62,7 @@ public class DangkyController {
     
     @PostMapping("/sinhvien/dangKyKL")
     public String themDK(@RequestBody Dangkykhoaluan dangkykhoaluan){
-        dangkykhoaluan.setXetDuyet(Short.parseShort("0"));
+        dangkykhoaluan.setXetDuyet(0);
         try {
             dangkyRepository.save(dangkykhoaluan);
         } catch (Exception e) {
@@ -74,7 +74,7 @@ public class DangkyController {
     @PostMapping("/giaovu/xetDuyet/{maDk}")
     public String xetDuyetDK(@PathVariable(value = "maDk") int maDk, @RequestBody Khoaluan khoaluan){
         Dangkykhoaluan dk = dangkyRepository.layDK(maDk);
-        dk.setXetDuyet(Short.parseShort("1"));
+        dk.setXetDuyet(1);
         khoaluan.setDangkykhoaluan(dk);
         try {
             dangkyRepository.save(dk);

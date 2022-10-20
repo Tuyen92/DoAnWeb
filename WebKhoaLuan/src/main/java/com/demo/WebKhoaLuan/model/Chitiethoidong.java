@@ -4,7 +4,6 @@
  */
 package com.demo.WebKhoaLuan.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -13,7 +12,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -22,17 +20,19 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  * @author ADMIN
  */
-@JsonIgnoreProperties({"giangvien"})
 @Entity
 @Table(name = "chitiethoidong")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Chitiethoidong.findAll", query = "SELECT c FROM Chitiethoidong c"),
-    @NamedQuery(name = "Chitiethoidong.findByMaGv", query = "SELECT c FROM Chitiethoidong c WHERE c.chitiethoidongPK.maGv = :maGv"),
-    @NamedQuery(name = "Chitiethoidong.findByMaHd", query = "SELECT c FROM Chitiethoidong c WHERE c.chitiethoidongPK.maHd = :maHd"),
+    @NamedQuery(name = "Chitiethoidong.findByHoidongMaHd", query = "SELECT c FROM Chitiethoidong c WHERE c.chitiethoidongPK.hoidongMaHd = :hoidongMaHd"),
+    @NamedQuery(name = "Chitiethoidong.findByGiangvienMaGv", query = "SELECT c FROM Chitiethoidong c WHERE c.chitiethoidongPK.giangvienMaGv = :giangvienMaGv"),
     @NamedQuery(name = "Chitiethoidong.findByChucVuhd", query = "SELECT c FROM Chitiethoidong c WHERE c.chucVuhd = :chucVuhd")})
 public class Chitiethoidong implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+    @EmbeddedId
+    protected ChitiethoidongPK chitiethoidongPK;
     @Size(max = 45)
     @Column(name = "chuc_vuhd")
     private String chucVuhd;
@@ -42,10 +42,7 @@ public class Chitiethoidong implements Serializable {
     @JoinColumn(name = "hoidong_ma_hd", referencedColumnName = "ma_hd", insertable = false, updatable = false)
     @ManyToOne(optional = false)
     private Hoidong hoidong;
-    private static final long serialVersionUID = 1L;
-    @EmbeddedId
-    protected ChitiethoidongPK chitiethoidongPK;
-   
+
     public Chitiethoidong() {
     }
 
@@ -53,8 +50,8 @@ public class Chitiethoidong implements Serializable {
         this.chitiethoidongPK = chitiethoidongPK;
     }
 
-    public Chitiethoidong(String maGv, int maHd) {
-        this.chitiethoidongPK = new ChitiethoidongPK(maGv, maHd);
+    public Chitiethoidong(int hoidongMaHd, String giangvienMaGv) {
+        this.chitiethoidongPK = new ChitiethoidongPK(hoidongMaHd, giangvienMaGv);
     }
 
     public ChitiethoidongPK getChitiethoidongPK() {
@@ -112,5 +109,6 @@ public class Chitiethoidong implements Serializable {
     @Override
     public String toString() {
         return "com.demo.WebKhoaLuan.model.Chitiethoidong[ chitiethoidongPK=" + chitiethoidongPK + " ]";
-    }    
+    }
+    
 }

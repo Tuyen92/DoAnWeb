@@ -27,14 +27,14 @@ public interface HoidongRepository extends JpaRepository<Hoidong, Integer>{
     @Query("SELECT h FROM Hoidong h WHERE h.maHd = :#{#maHd}")
     Hoidong layHD(int maHd);
     
-    @Query("SELECT h FROM Hoidong h JOIN Chitiethoidong c ON h.maHd = c.chitiethoidongPK.maHd WHERE c.chitiethoidongPK.maGv = :#{#maGv}")
+    @Query("SELECT c FROM Chitiethoidong c WHERE c.chitiethoidongPK.giangvienMaGv = :#{#maGv}")
     List<Hoidong> layHDGV(String maGv);
     
     @Query("SELECT h FROM Hoidong h WHERE h.tinhTranghd = :#{#hoatDong}")
     List<Hoidong> dsHDHoatDong(short hoatDong);
     
-    @Modifying
-    @Query("INSERT INTO Hoidong (ma_hd, ten_hd, tinh_tranghd, ngay_lap) VALUES (:#{#maHd}, :#{#tenHd}, :#{#tinhTranghd}, :#{#ngayLap})")
-    @Transactional
-    Hoidong themHD(@Param("maHd") int maHd, @Param("tenHd") String tenHd, @Param("tinhTranghd") short tinhTranghd, @Param("ngayLap") Date ngayLap);
+//    @Modifying
+//    @Query("INSERT INTO Hoidong (ma_hd, ten_hd, tinh_tranghd, ngay_lap) VALUES (:#{#maHd}, :#{#tenHd}, :#{#tinhTranghd}, :#{#ngayLap})")
+//    @Transactional
+//    Hoidong themHD(@Param("maHd") int maHd, @Param("tenHd") String tenHd, @Param("tinhTranghd") short tinhTranghd, @Param("ngayLap") Date ngayLap);
 }

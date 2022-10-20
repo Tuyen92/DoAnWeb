@@ -59,30 +59,26 @@ public class HoidongController {
     public String tinhTrangHD(@PathVariable(value = "maHd") int maHd){
         Hoidong hd = hoiDongRepository.layHD(maHd);
         if (hd.getTinhTranghd() == 1)
-            hd.setTinhTranghd(Short.parseShort("0"));
+            hd.setTinhTranghd(0);
         else
-            hd.setTinhTranghd(Short.parseShort("1"));
+            hd.setTinhTranghd(1);
         try {
             hoiDongRepository.save(hd);
         } catch (Exception e) {
             return "Cập nhật không thành công";
         }
         return "Cập nhật thành công";
-        
     }
     
     @PostMapping("/giaovu/themHD")
-    public void themHD(@RequestBody Hoidong hoidong){
+    public String themHD(@RequestBody Hoidong hoidong){
         Hoidong hd = new Hoidong();
-        hd.setMaHd(hoidong.getMaHd());
-        hd.setTenHd(hoidong.getTenHd());
-        hoiDongRepository.themHD(hoidong.getMaHd(), hoidong.getTenHd(), hoidong.getTinhTranghd(), hoidong.getNgayLap());
-//        try {
-//            
-//        } catch (Exception e) {
-//            return "Thêm hội đồng không thành công";
-//        }
-//        return "Thêm hội đồng thành công";
+        try {
+            hoiDongRepository.save(hd);
+        } catch (Exception e) {
+            return "Thêm hội đồng không thành công";
+        }
+        return "Thêm hội đồng thành công";
     }
     
     @PostMapping("/giaovu/phanCong/{maHd}")

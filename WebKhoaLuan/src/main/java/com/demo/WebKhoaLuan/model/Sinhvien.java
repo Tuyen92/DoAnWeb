@@ -44,7 +44,7 @@ public class Sinhvien implements Serializable {
     @Column(name = "nien_khoa")
     private String nienKhoa;
     @Column(name = "tinh_trang")
-    private Short tinhTrang;
+    private Integer tinhTrang;
     @JoinColumns({
         @JoinColumn(name = "nganh_ma_nganh", referencedColumnName = "ma_nganh"),
         @JoinColumn(name = "nganh_khoa_ma_khoa", referencedColumnName = "khoa_ma_khoa")})
@@ -79,11 +79,11 @@ public class Sinhvien implements Serializable {
         this.nienKhoa = nienKhoa;
     }
 
-    public Short getTinhTrang() {
+    public Integer getTinhTrang() {
         return tinhTrang;
     }
 
-    public void setTinhTrang(Short tinhTrang) {
+    public void setTinhTrang(Integer tinhTrang) {
         this.tinhTrang = tinhTrang;
     }
 

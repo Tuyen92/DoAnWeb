@@ -19,44 +19,43 @@ import javax.validation.constraints.Size;
 public class ChitiethoidongPK implements Serializable {
 
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 10)
-    @Column(name = "ma_gv")
-    private String maGv;
+    @Column(name = "hoidong_ma_hd")
+    private int hoidongMaHd;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "ma_hd")
-    private int maHd;
+    @Size(min = 1, max = 10)
+    @Column(name = "giangvien_ma_gv")
+    private String giangvienMaGv;
 
     public ChitiethoidongPK() {
     }
 
-    public ChitiethoidongPK(String maGv, int maHd) {
-        this.maGv = maGv;
-        this.maHd = maHd;
+    public ChitiethoidongPK(int hoidongMaHd, String giangvienMaGv) {
+        this.hoidongMaHd = hoidongMaHd;
+        this.giangvienMaGv = giangvienMaGv;
     }
 
-    public String getMaGv() {
-        return maGv;
+    public int getHoidongMaHd() {
+        return hoidongMaHd;
     }
 
-    public void setMaGv(String maGv) {
-        this.maGv = maGv;
+    public void setHoidongMaHd(int hoidongMaHd) {
+        this.hoidongMaHd = hoidongMaHd;
     }
 
-    public int getMaHd() {
-        return maHd;
+    public String getGiangvienMaGv() {
+        return giangvienMaGv;
     }
 
-    public void setMaHd(int maHd) {
-        this.maHd = maHd;
+    public void setGiangvienMaGv(String giangvienMaGv) {
+        this.giangvienMaGv = giangvienMaGv;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (maGv != null ? maGv.hashCode() : 0);
-        hash += (int) maHd;
+        hash += (int) hoidongMaHd;
+        hash += (giangvienMaGv != null ? giangvienMaGv.hashCode() : 0);
         return hash;
     }
 
@@ -67,10 +66,10 @@ public class ChitiethoidongPK implements Serializable {
             return false;
         }
         ChitiethoidongPK other = (ChitiethoidongPK) object;
-        if ((this.maGv == null && other.maGv != null) || (this.maGv != null && !this.maGv.equals(other.maGv))) {
+        if (this.hoidongMaHd != other.hoidongMaHd) {
             return false;
         }
-        if (this.maHd != other.maHd) {
+        if ((this.giangvienMaGv == null && other.giangvienMaGv != null) || (this.giangvienMaGv != null && !this.giangvienMaGv.equals(other.giangvienMaGv))) {
             return false;
         }
         return true;
@@ -78,7 +77,7 @@ public class ChitiethoidongPK implements Serializable {
 
     @Override
     public String toString() {
-        return "com.demo.WebKhoaLuan.model.ChitiethoidongPK[ maGv=" + maGv + ", maHd=" + maHd + " ]";
+        return "com.demo.WebKhoaLuan.model.ChitiethoidongPK[ hoidongMaHd=" + hoidongMaHd + ", giangvienMaGv=" + giangvienMaGv + " ]";
     }
     
 }

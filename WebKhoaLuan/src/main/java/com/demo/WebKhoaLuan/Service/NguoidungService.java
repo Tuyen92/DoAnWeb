@@ -4,7 +4,7 @@
  */
 package com.demo.WebKhoaLuan.Service;
 
-import com.demo.WebKhoaLuan.model.MyUserDetails;
+//import com.demo.WebKhoaLuan.model.MyUserDetails;
 import com.demo.WebKhoaLuan.model.Nguoidung;
 import com.demo.WebKhoaLuan.repository.NguoidungRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,14 +23,19 @@ public class NguoidungService implements UserDetailsService{
     @Autowired
     NguoidungRepository nguoidungRepository;
     
+//    @Override
+//    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+//        Nguoidung nguoidung = nguoidungRepository.findByUsername(username);
+//        if(nguoidung == null){
+//            throw new UsernameNotFoundException("Không thấy người dùng");
+//        }
+//        
+//        return new MyUserDetails(nguoidung);
+//    }
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Nguoidung nguoidung = nguoidungRepository.findByUsername(username);
-        if(nguoidung == null){
-            throw new UsernameNotFoundException("Không thấy người dùng");
-        }
-        
-        return new MyUserDetails(nguoidung);
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
     
 }

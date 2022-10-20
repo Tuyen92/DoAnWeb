@@ -12,8 +12,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -51,10 +49,7 @@ public class Dangkykhoaluan implements Serializable {
     @Column(name = "ma_sv")
     private String maSv;
     @Column(name = "xet_duyet")
-    private Short xetDuyet;
-    @JoinColumn(name = "detai_ma_dt", referencedColumnName = "ma_dt", insertable = false, updatable = false)
-    @ManyToOne(optional = false)
-    private Detai detai;
+    private Integer xetDuyet;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "dangkykhoaluan")
     private Set<Khoaluan> khoaluanSet;
 
@@ -93,20 +88,12 @@ public class Dangkykhoaluan implements Serializable {
         this.maSv = maSv;
     }
 
-    public Short getXetDuyet() {
+    public Integer getXetDuyet() {
         return xetDuyet;
     }
 
-    public void setXetDuyet(Short xetDuyet) {
+    public void setXetDuyet(Integer xetDuyet) {
         this.xetDuyet = xetDuyet;
-    }
-
-    public Detai getDetai() {
-        return detai;
-    }
-
-    public void setDetai(Detai detai) {
-        this.detai = detai;
     }
 
     @XmlTransient

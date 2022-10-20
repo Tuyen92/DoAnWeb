@@ -13,11 +13,9 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -30,7 +28,7 @@ import javax.xml.bind.annotation.XmlTransient;
  *
  * @author ADMIN
  */
-@JsonIgnoreProperties({"khoaluanSet", "chitiethoidongSet"})
+@JsonIgnoreProperties({"khoaluanSet"})
 @Entity
 @Table(name = "hoidong")
 @XmlRootElement
@@ -42,23 +40,22 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Hoidong.findByTinhTranghd", query = "SELECT h FROM Hoidong h WHERE h.tinhTranghd = :tinhTranghd")})
 public class Hoidong implements Serializable {
 
-    @Size(max = 200)
-    @Column(name = "ten_hd")
-    private String tenHd;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "hoidong")
-    private Set<Chitiethoidong> chitiethoidongSet;
-
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
     @NotNull
     @Column(name = "ma_hd")
     private Integer maHd;
+    @Size(max = 200)
+    @Column(name = "ten_hd")
+    private String tenHd;
     @Column(name = "ngay_lap")
     @Temporal(TemporalType.DATE)
     private Date ngayLap;
     @Column(name = "tinh_tranghd")
-    private Short tinhTranghd;
+    private Integer tinhTranghd;
+//    @OneToMany(cascade = CascadeType.ALL, mappedBy = "hoidong")
+//    private Set<Chitiethoidong> chitiethoidongSet;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "hoidongMaHd")
     private Set<Khoaluan> khoaluanSet;
 
@@ -93,22 +90,23 @@ public class Hoidong implements Serializable {
         this.ngayLap = ngayLap;
     }
 
-    public Short getTinhTranghd() {
+    public Integer getTinhTranghd() {
         return tinhTranghd;
     }
 
-    public void setTinhTranghd(Short tinhTranghd) {
+    public void setTinhTranghd(Integer tinhTranghd) {
         this.tinhTranghd = tinhTranghd;
     }
 
-//    public Chitiethoidong getChitiethoidong() {
-//        return chitiethoidong;
+//    @XmlTransient
+//    public Set<Chitiethoidong> getChitiethoidongSet() {
+//        return chitiethoidongSet;
 //    }
 //
-//    public void setChitiethoidong(Chitiethoidong chitiethoidong) {
-//        this.chitiethoidong = chitiethoidong;
+//    public void setChitiethoidongSet(Set<Chitiethoidong> chitiethoidongSet) {
+//        this.chitiethoidongSet = chitiethoidongSet;
 //    }
-//
+
     @XmlTransient
     public Set<Khoaluan> getKhoaluanSet() {
         return khoaluanSet;
@@ -141,15 +139,6 @@ public class Hoidong implements Serializable {
     @Override
     public String toString() {
         return "com.demo.WebKhoaLuan.model.Hoidong[ maHd=" + maHd + " ]";
-    }
-
-    @XmlTransient
-    public Set<Chitiethoidong> getChitiethoidongSet() {
-        return chitiethoidongSet;
-    }
-
-    public void setChitiethoidongSet(Set<Chitiethoidong> chitiethoidongSet) {
-        this.chitiethoidongSet = chitiethoidongSet;
     }
     
 }

@@ -35,10 +35,6 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Chucvu.findByTenCv", query = "SELECT c FROM Chucvu c WHERE c.tenCv = :tenCv")})
 public class Chucvu implements Serializable {
 
-    @Size(max = 100)
-    @Column(name = "ten_cv")
-    private String tenCv;
-
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -46,6 +42,9 @@ public class Chucvu implements Serializable {
     @Size(min = 1, max = 10)
     @Column(name = "ma_cv")
     private String maCv;
+    @Size(max = 100)
+    @Column(name = "ten_cv")
+    private String tenCv;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "chucvu")
     private Set<Nguoidung> nguoidungSet;
 
@@ -105,4 +104,5 @@ public class Chucvu implements Serializable {
     public String toString() {
         return "com.demo.WebKhoaLuan.model.Chucvu[ maCv=" + maCv + " ]";
     }
+    
 }
