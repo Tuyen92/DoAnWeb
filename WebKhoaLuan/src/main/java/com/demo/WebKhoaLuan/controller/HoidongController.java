@@ -51,7 +51,7 @@ public class HoidongController {
     }
     
     @GetMapping("/giangvien/dsHoiDongGV/{maGv}")
-    public List<Hoidong> dsHDGV(@PathVariable(value = "maGv") String maGv){
+    public List<Chitiethoidong> dsHDGV(@PathVariable(value = "maGv") String maGv){
         return hoiDongRepository.layHDGV(maGv);
     }
     

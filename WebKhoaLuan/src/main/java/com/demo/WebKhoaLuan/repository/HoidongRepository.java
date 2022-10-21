@@ -4,6 +4,7 @@
  */
 package com.demo.WebKhoaLuan.repository;
 
+import com.demo.WebKhoaLuan.model.Chitiethoidong;
 import com.demo.WebKhoaLuan.model.Hoidong;
 import java.util.Date;
 import java.util.List;
@@ -28,7 +29,7 @@ public interface HoidongRepository extends JpaRepository<Hoidong, Integer>{
     Hoidong layHD(int maHd);
     
     @Query("SELECT c FROM Chitiethoidong c WHERE c.chitiethoidongPK.giangvienMaGv = :#{#maGv}")
-    List<Hoidong> layHDGV(String maGv);
+    List<Chitiethoidong> layHDGV(String maGv);
     
     @Query("SELECT h FROM Hoidong h WHERE h.tinhTranghd = :#{#hoatDong}")
     List<Hoidong> dsHDHoatDong(short hoatDong);
