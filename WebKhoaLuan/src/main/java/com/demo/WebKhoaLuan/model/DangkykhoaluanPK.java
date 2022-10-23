@@ -9,6 +9,7 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  *
@@ -18,20 +19,25 @@ import javax.validation.constraints.NotNull;
 public class DangkykhoaluanPK implements Serializable {
 
     @Basic(optional = false)
-    @NotNull
     @Column(name = "ma_dk")
     private int maDk;
     @Basic(optional = false)
     @NotNull
     @Column(name = "detai_ma_dt")
     private int detaiMaDt;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 10)
+    @Column(name = "sinhvien_ma_sv")
+    private String sinhvienMaSv;
 
     public DangkykhoaluanPK() {
     }
 
-    public DangkykhoaluanPK(int maDk, int detaiMaDt) {
+    public DangkykhoaluanPK(int maDk, int detaiMaDt, String sinhvienMaSv) {
         this.maDk = maDk;
         this.detaiMaDt = detaiMaDt;
+        this.sinhvienMaSv = sinhvienMaSv;
     }
 
     public int getMaDk() {
@@ -50,11 +56,20 @@ public class DangkykhoaluanPK implements Serializable {
         this.detaiMaDt = detaiMaDt;
     }
 
+    public String getSinhvienMaSv() {
+        return sinhvienMaSv;
+    }
+
+    public void setSinhvienMaSv(String sinhvienMaSv) {
+        this.sinhvienMaSv = sinhvienMaSv;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
         hash += (int) maDk;
         hash += (int) detaiMaDt;
+        hash += (sinhvienMaSv != null ? sinhvienMaSv.hashCode() : 0);
         return hash;
     }
 
@@ -71,12 +86,15 @@ public class DangkykhoaluanPK implements Serializable {
         if (this.detaiMaDt != other.detaiMaDt) {
             return false;
         }
+        if ((this.sinhvienMaSv == null && other.sinhvienMaSv != null) || (this.sinhvienMaSv != null && !this.sinhvienMaSv.equals(other.sinhvienMaSv))) {
+            return false;
+        }
         return true;
     }
 
     @Override
     public String toString() {
-        return "com.demo.WebKhoaLuan.model.DangkykhoaluanPK[ maDk=" + maDk + ", detaiMaDt=" + detaiMaDt + " ]";
+        return "com.demo.WebKhoaLuan.model.DangkykhoaluanPK[ maDk=" + maDk + ", detaiMaDt=" + detaiMaDt + ", sinhvienMaSv=" + sinhvienMaSv + " ]";
     }
     
 }

@@ -28,7 +28,7 @@ import javax.xml.bind.annotation.XmlTransient;
  *
  * @author ADMIN
  */
-@JsonIgnoreProperties({"khoaluanSet"})
+@JsonIgnoreProperties({"khoaluanSet", "chitiethoidongSet"})
 @Entity
 @Table(name = "hoidong")
 @XmlRootElement
@@ -54,8 +54,8 @@ public class Hoidong implements Serializable {
     private Date ngayLap;
     @Column(name = "tinh_tranghd")
     private Integer tinhTranghd;
-//    @OneToMany(cascade = CascadeType.ALL, mappedBy = "hoidong")
-//    private Set<Chitiethoidong> chitiethoidongSet;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "hoidong")
+    private Set<Chitiethoidong> chitiethoidongSet;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "hoidongMaHd")
     private Set<Khoaluan> khoaluanSet;
 
@@ -98,14 +98,14 @@ public class Hoidong implements Serializable {
         this.tinhTranghd = tinhTranghd;
     }
 
-//    @XmlTransient
-//    public Set<Chitiethoidong> getChitiethoidongSet() {
-//        return chitiethoidongSet;
-//    }
-//
-//    public void setChitiethoidongSet(Set<Chitiethoidong> chitiethoidongSet) {
-//        this.chitiethoidongSet = chitiethoidongSet;
-//    }
+    @XmlTransient
+    public Set<Chitiethoidong> getChitiethoidongSet() {
+        return chitiethoidongSet;
+    }
+
+    public void setChitiethoidongSet(Set<Chitiethoidong> chitiethoidongSet) {
+        this.chitiethoidongSet = chitiethoidongSet;
+    }
 
     @XmlTransient
     public Set<Khoaluan> getKhoaluanSet() {

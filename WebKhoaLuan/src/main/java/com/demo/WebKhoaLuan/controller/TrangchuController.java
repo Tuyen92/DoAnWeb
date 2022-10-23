@@ -11,6 +11,7 @@ import com.demo.WebKhoaLuan.repository.ChucvuRepository;
 import com.demo.WebKhoaLuan.repository.KhoaRepository;
 import com.demo.WebKhoaLuan.repository.NganhRepository;
 import java.util.List;
+import javax.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -33,21 +34,31 @@ public class TrangchuController {
     @Autowired
     private ChucvuRepository chucVuRepository;
     
+    //TRANG CHỦ
     @GetMapping
     public String home(){
         return "Hello user";
     }
     
+    //DANH SÁCH KHOA
     @GetMapping("/khoa")
     public List<Khoa> DSKhoa() {
         return khoaRepository.findAll();
     }
     
+    //DANH SÁCH NGÀNH
     @GetMapping("/nganh")
     public List<Nganh> DSNganh() {
         return nganhRepository.findAll();
     }
     
+    //DANH SÁCH NGÀNH THEO KHOA
+    @GetMapping("/nganh/{maKhoa}")
+    public List<Nganh> DSNganhTheoKhoa(@PathParam(value = "maKhoa") String maKhoa){
+        return nganhRepository.layDsNganhTheoKhoa(maKhoa);
+    }
+    
+    //DANH SÁCH CHỨC VỤ
     @GetMapping("/chucvu")
     public List<Chucvu> DSChucVu() {
         return chucVuRepository.findAll();

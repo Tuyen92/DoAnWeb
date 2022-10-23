@@ -44,7 +44,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Khoaluan.findByMaGvpb", query = "SELECT k FROM Khoaluan k WHERE k.maGvpb = :maGvpb"),
     @NamedQuery(name = "Khoaluan.findByFileNop", query = "SELECT k FROM Khoaluan k WHERE k.fileNop = :fileNop"),
     @NamedQuery(name = "Khoaluan.findByDangkykhoaluanMaDk", query = "SELECT k FROM Khoaluan k WHERE k.khoaluanPK.dangkykhoaluanMaDk = :dangkykhoaluanMaDk"),
-    @NamedQuery(name = "Khoaluan.findByDangkykhoaluanDetaiMaDt", query = "SELECT k FROM Khoaluan k WHERE k.khoaluanPK.dangkykhoaluanDetaiMaDt = :dangkykhoaluanDetaiMaDt")})
+    @NamedQuery(name = "Khoaluan.findByDangkykhoaluanDetaiMaDt", query = "SELECT k FROM Khoaluan k WHERE k.khoaluanPK.dangkykhoaluanDetaiMaDt = :dangkykhoaluanDetaiMaDt"),
+    @NamedQuery(name = "Khoaluan.findByDangkykhoaluanSinhvienMaSv", query = "SELECT k FROM Khoaluan k WHERE k.khoaluanPK.dangkykhoaluanSinhvienMaSv = :dangkykhoaluanSinhvienMaSv")})
 public class Khoaluan implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -75,7 +76,8 @@ public class Khoaluan implements Serializable {
     private Set<Diem> diemSet;
     @JoinColumns({
         @JoinColumn(name = "dangkykhoaluan_ma_dk", referencedColumnName = "ma_dk", insertable = false, updatable = false),
-        @JoinColumn(name = "dangkykhoaluan_detai_ma_dt", referencedColumnName = "detai_ma_dt", insertable = false, updatable = false)})
+        @JoinColumn(name = "dangkykhoaluan_detai_ma_dt", referencedColumnName = "detai_ma_dt", insertable = false, updatable = false),
+        @JoinColumn(name = "dangkykhoaluan_sinhvien_ma_sv", referencedColumnName = "sinhvien_ma_sv", insertable = false, updatable = false)})
     @ManyToOne(optional = false)
     private Dangkykhoaluan dangkykhoaluan;
     @JoinColumn(name = "hoidong_ma_hd", referencedColumnName = "ma_hd")
@@ -89,8 +91,8 @@ public class Khoaluan implements Serializable {
         this.khoaluanPK = khoaluanPK;
     }
 
-    public Khoaluan(int maKl, int dangkykhoaluanMaDk, int dangkykhoaluanDetaiMaDt) {
-        this.khoaluanPK = new KhoaluanPK(maKl, dangkykhoaluanMaDk, dangkykhoaluanDetaiMaDt);
+    public Khoaluan(int maKl, int dangkykhoaluanMaDk, int dangkykhoaluanDetaiMaDt, String dangkykhoaluanSinhvienMaSv) {
+        this.khoaluanPK = new KhoaluanPK(maKl, dangkykhoaluanMaDk, dangkykhoaluanDetaiMaDt, dangkykhoaluanSinhvienMaSv);
     }
 
     public KhoaluanPK getKhoaluanPK() {

@@ -4,9 +4,13 @@
  */
 package com.demo.WebKhoaLuan.controller;
 
+import com.demo.WebKhoaLuan.model.Detai;
 import com.demo.WebKhoaLuan.model.Diem;
+import com.demo.WebKhoaLuan.model.Khoaluan;
 import com.demo.WebKhoaLuan.model.Tongketkhoaluan;
+import com.demo.WebKhoaLuan.repository.DetaiRepository;
 import com.demo.WebKhoaLuan.repository.DiemRepository;
+import com.demo.WebKhoaLuan.repository.KhoaluanRepository;
 import com.demo.WebKhoaLuan.repository.TongketRepository;
 import java.math.BigDecimal;
 import java.util.List;
@@ -28,26 +32,46 @@ public class DiemController {
     private DiemRepository diemRepository;
     @Autowired
     private TongketRepository tongKetRepository;
-    
+    @Autowired
+    private KhoaluanRepository KhoaluanRepository;
+    @Autowired
+    private DetaiRepository deTaiRepository;
+   
+    //GIẢNG VIÊN CHẤM ĐIỂM KHÓA LUẬN
     @PostMapping("/giangvien/chamDiem")
     public void chamDiem(@RequestParam Diem diem){
         diemRepository.save(diem);
     }
     
-    @PostMapping("/sinhvien/xemKQ/{maSv}/{maKl}")
+    //SINH VIÊN XEM ĐIỂM KHÓA LUẬN
+    @PostMapping("/sinhvien/xemKQ/{maSv}")
     public Tongketkhoaluan xemKetQua(@PathVariable(value = "maSv") String maSv, @PathVariable(value = "maKl") int maKl){
-        List<Diem> diemGV = diemRepository.layDiemGVKL(maKl);
-        List<Diem> diemHD = diemRepository.layDiemHDKL(maKl);
+        Khoaluan kl = KhoaluanRepository.layKhoaluanSV(maSv);
+        List<Diem> diemGV = diemRepository.layDiemGVKL(kl.getKhoaluanPK().getMaKl());
+        List<Diem> diemHD = diemRepository.layDiemHDKL(kl.getKhoaluanPK().getMaKl());
+        Detai dt = deTaiRepository.layDeTai(kl.getDangkykhoaluan().getDetai().getMaDt());
         double diemTong = 0;
-        diemTong = (tinhTBC(diemGV) * 0.4) + (tinhTBC(diemHD) * 0.6);
-        String result = xetKetQua(diemTong);
-        Tongketkhoaluan tk = new Tongketkhoaluan();
-        tk.setMaSv(maSv);
-        tk.setDiem(BigDecimal.valueOf(diemTong));
-        tk.setKetQua(result);
-        return tongKetRepository.save(tk);
+        String result;
+        if (kl.getNgayNop().after(dt.getHanNop())) {
+            diemTong = (tinhTBC(diemGV) * 0.4) + (tinhTBC(diemHD) * 0.6);
+            result = xetKetQua(diemTong);
+            Tongketkhoaluan tk = new Tongketkhoaluan();
+            tk.setMaSv(maSv);
+            tk.setDiem(BigDecimal.valueOf(diemTong));
+            tk.setKetQua(result);
+            return tongKetRepository.save(tk);
+        }
+        else {
+            result = "F";
+            Tongketkhoaluan tk = new Tongketkhoaluan();
+            tk.setMaSv(maSv);
+            tk.setDiem(BigDecimal.valueOf(diemTong));
+            tk.setKetQua(result);
+            return tongKetRepository.save(tk);
+        }
     }
     
+    //TÍNH ĐIỂM TRUNG BÌNH
     public double tinhTBC(List<Diem> diem){
         double diemTBC = 0;
         for (int i = 0; i < diem.size(); i++){
@@ -57,6 +81,7 @@ public class DiemController {
         return diemTBC;
     }
 
+    //XEM KẾT QUẢ KHÓA LUẬN
     public String xetKetQua(double score) {
         if (score <= 10 && score >= 8.5) {
             return "A";

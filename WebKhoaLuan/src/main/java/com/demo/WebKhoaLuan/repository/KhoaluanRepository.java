@@ -25,4 +25,13 @@ public interface KhoaluanRepository extends JpaRepository<Khoaluan, KhoaluanPK>{
     
     @Query("SELECT k FROM Khoaluan k WHERE k.khoaluanPK.maKl = :#{#maKl}")
     Khoaluan layKhoaLuan(int maKl);
+    
+    @Query("SELECT k FROM Khoaluan k WHERE k.khoaluanPK.dangkykhoaluanSinhvienMaSv = :#{#maSv}")
+    Khoaluan layKhoaluanSV(String maSv);
+    
+    @Query("SELECT k FROM Khoaluan k WHERE k.hoidongMaHd = :#{#maHd}")
+    List<Khoaluan> layDsKLHD(int maHd);
+    
+    @Query("SELECT COUNT(k) FROM Khoaluan k WHERE k.hoidongMaHd = :#{#maHd}")
+    int demSoLuongKL(int maHd);
 }

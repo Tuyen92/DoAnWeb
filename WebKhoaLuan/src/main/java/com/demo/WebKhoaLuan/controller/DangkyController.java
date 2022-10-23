@@ -8,6 +8,7 @@ import com.demo.WebKhoaLuan.model.Dangkykhoaluan;
 import com.demo.WebKhoaLuan.model.Khoaluan;
 import com.demo.WebKhoaLuan.repository.DangkyRepository;
 import com.demo.WebKhoaLuan.repository.KhoaluanRepository;
+import java.util.Calendar;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -30,26 +31,31 @@ public class DangkyController {
     @Autowired
     private KhoaluanRepository khoaluanRepository;
     
+    //GIÁO VỤ LẤY DANH SÁCH ĐĂNG KÝ KHÓA LUẬN
     @GetMapping("/giaovu/dsDangKy")
     public List<Dangkykhoaluan> dsDangKy(){
         return dangkyRepository.findAll();
     }
     
+    //GIÁO VỤ LẤY DANH SÁCH ĐĂNG KÝ KHÓA LUẬN ĐÃ XÉT DUYỆT
     @GetMapping("/giaovu/dsDKDaXet")
     public List<Dangkykhoaluan> dsDKXetDuyet(){
-        return dangkyRepository.dsDKXetDuyet(Short.parseShort("1"));
+        return dangkyRepository.dsDKXetDuyet(1);
     }
     
+    //GIÁO VỤ LẤY DANH SÁCH ĐĂNG KÝ KHÓA LUẬN CHƯA XÉT DUYỆT
     @GetMapping("/giaovu/dsDKChuaDaXet")
     public List<Dangkykhoaluan> dsDKChuaXetDuyet(){
-        return dangkyRepository.dsDKXetDuyet(Short.parseShort("0"));
+        return dangkyRepository.dsDKXetDuyet(0);
     }
     
+    //GIÁO VỤ LẤY ĐĂNG KÝ KHÓA LUẬN CỦA SINH VIÊN
     @GetMapping("/giaovu/dsDangKy/{maSv}")
     public Dangkykhoaluan layDangKy(@PathVariable(value = "maSv") String maSv){
         return dangkyRepository.layDKSV(maSv);
     }
     
+    //GIÁO VỤ XÓA ĐĂNG KÝ KHÓA LUẬN CHƯA XÉT DUYỆT
     @DeleteMapping("/giaovu/xoaDangKy/{maDk}")
     public String xoaDangKy(@PathVariable(value = "maDk") int maDk){
         Dangkykhoaluan dk = dangkyRepository.layDK(maDk);
@@ -60,9 +66,11 @@ public class DangkyController {
         return "Xóa thành công";
     }
     
+    //SINH VIÊN ĐĂNG KÝ LÀM KHÓA LUẬN
     @PostMapping("/sinhvien/dangKyKL")
-    public String themDK(@RequestBody Dangkykhoaluan dangkykhoaluan){
+    public String themDK(@RequestBody Dangkykhoaluan dangkykhoaluan){  
         dangkykhoaluan.setXetDuyet(0);
+        dangkykhoaluan.setNgayDk(Calendar.getInstance().getTime());
         try {
             dangkyRepository.save(dangkykhoaluan);
         } catch (Exception e) {
@@ -71,17 +79,29 @@ public class DangkyController {
         return "Đăng ký thành công";
     }
     
+    //SINH VIÊN XEM ĐĂNG KÝ KHÓA LUẬN CỦA MÌNH
+    @GetMapping("/sinhvien/xemDKKL/{maSv}")
+    public Dangkykhoaluan xemDKKL(@PathVariable(value = "maSv") String maSv){
+        return dangkyRepository.layDKSV(maSv);
+    }
+    
+    //GIÁO VỤ XÉT DUYỆT MỘT ĐĂNG KÝ & GÁN GIẢNG VIÊN, HỘI ĐỒNG
     @PostMapping("/giaovu/xetDuyet/{maDk}")
     public String xetDuyetDK(@PathVariable(value = "maDk") int maDk, @RequestBody Khoaluan khoaluan){
         Dangkykhoaluan dk = dangkyRepository.layDK(maDk);
         dk.setXetDuyet(1);
-        khoaluan.setDangkykhoaluan(dk);
-        try {
-            dangkyRepository.save(dk);
-            khoaluanRepository.save(khoaluan);
-        } catch (Exception e) {
-            return "Xét duyệt khóa luận không thành công";
+        if (khoaluanRepository.demSoLuongKL(khoaluan.getHoidongMaHd().getMaHd()) < 5) {
+            khoaluan.setDangkykhoaluan(dk);
+            khoaluan.setNam(String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
+            khoaluan.setMaSv2(dk.getMaSv2());
+            try {
+                dangkyRepository.save(dk);
+                khoaluanRepository.save(khoaluan);
+            } catch (Exception e) {
+                return "Xét duyệt khóa luận không thành công";
+            }
+            return "Xét duyệt khóa luận thành công";
         }
-        return "Xét duyệt khóa luận thành công";
+        return "Hội đồng đã đạt tối đa số lượng khóa luận";
     }
 }

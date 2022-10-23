@@ -59,8 +59,8 @@ public class Giangvien implements Serializable {
         @JoinColumn(name = "nguoidung_chucvu_ma_cv", referencedColumnName = "chucvu_ma_cv")})
     @ManyToOne(optional = false)
     private Nguoidung nguoidung;
-//    @OneToMany(cascade = CascadeType.ALL, mappedBy = "giangvien")
-//    private Set<Chitiethoidong> chitiethoidongSet;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "giangvien")
+    private Set<Chitiethoidong> chitiethoidongSet;
 
     public Giangvien() {
     }
@@ -110,14 +110,14 @@ public class Giangvien implements Serializable {
         this.nguoidung = nguoidung;
     }
 
-//    @XmlTransient
-//    public Set<Chitiethoidong> getChitiethoidongSet() {
-//        return chitiethoidongSet;
-//    }
-//
-//    public void setChitiethoidongSet(Set<Chitiethoidong> chitiethoidongSet) {
-//        this.chitiethoidongSet = chitiethoidongSet;
-//    }
+    @XmlTransient
+    public Set<Chitiethoidong> getChitiethoidongSet() {
+        return chitiethoidongSet;
+    }
+
+    public void setChitiethoidongSet(Set<Chitiethoidong> chitiethoidongSet) {
+        this.chitiethoidongSet = chitiethoidongSet;
+    }
 
     @Override
     public int hashCode() {

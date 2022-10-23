@@ -4,10 +4,8 @@
  */
 package com.demo.WebKhoaLuan.repository;
 
-import com.demo.WebKhoaLuan.model.Nganh;
-import java.util.List;
+import com.demo.WebKhoaLuan.model.Tieuchi;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,8 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Repository
 @Transactional
-public interface NganhRepository extends JpaRepository<Nganh, String>{
-    
-    @Query("SELECT n FROM Nganh n WHERE n.nganhPK.khoaMaKhoa = :#{#maKhoa}")
-    List<Nganh> layDsNganhTheoKhoa(String maKhoa);
+public interface TieuchiRepository extends JpaRepository<Tieuchi, String>{
+        
 }

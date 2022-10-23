@@ -4,8 +4,11 @@
  */
 package com.demo.WebKhoaLuan.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
+import java.util.Set;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -14,15 +17,18 @@ import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
  * @author ADMIN
  */
+@JsonIgnoreProperties({"dangkykhoaluanSet"})
 @Entity
 @Table(name = "sinhvien")
 @XmlRootElement
@@ -45,6 +51,8 @@ public class Sinhvien implements Serializable {
     private String nienKhoa;
     @Column(name = "tinh_trang")
     private Integer tinhTrang;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "sinhvien")
+    private Set<Dangkykhoaluan> dangkykhoaluanSet;
     @JoinColumns({
         @JoinColumn(name = "nganh_ma_nganh", referencedColumnName = "ma_nganh"),
         @JoinColumn(name = "nganh_khoa_ma_khoa", referencedColumnName = "khoa_ma_khoa")})
@@ -85,6 +93,15 @@ public class Sinhvien implements Serializable {
 
     public void setTinhTrang(Integer tinhTrang) {
         this.tinhTrang = tinhTrang;
+    }
+
+    @XmlTransient
+    public Set<Dangkykhoaluan> getDangkykhoaluanSet() {
+        return dangkykhoaluanSet;
+    }
+
+    public void setDangkykhoaluanSet(Set<Dangkykhoaluan> dangkykhoaluanSet) {
+        this.dangkykhoaluanSet = dangkykhoaluanSet;
     }
 
     public Nganh getNganh() {

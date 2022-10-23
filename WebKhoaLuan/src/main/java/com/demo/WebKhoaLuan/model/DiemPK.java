@@ -21,13 +21,8 @@ public class DiemPK implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 10)
-    @Column(name = "ma_tc")
-    private String maTc;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 10)
-    @Column(name = "giangvien_ma_gv")
-    private String giangvienMaGv;
+    @Column(name = "tieuchi_ma_tc")
+    private String tieuchiMaTc;
     @Basic(optional = false)
     @NotNull
     @Column(name = "khoaluan_ma_kl")
@@ -40,32 +35,35 @@ public class DiemPK implements Serializable {
     @NotNull
     @Column(name = "khoaluan_dangkykhoaluan_detai_ma_dt")
     private int khoaluanDangkykhoaluanDetaiMaDt;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 10)
+    @Column(name = "khoaluan_dangkykhoaluan_sinhvien_ma_sv")
+    private String khoaluanDangkykhoaluanSinhvienMaSv;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 10)
+    @Column(name = "giangvien_ma_gv")
+    private String giangvienMaGv;
 
     public DiemPK() {
     }
 
-    public DiemPK(String maTc, String giangvienMaGv, int khoaluanMaKl, int khoaluanDangkykhoaluanMaDk, int khoaluanDangkykhoaluanDetaiMaDt) {
-        this.maTc = maTc;
-        this.giangvienMaGv = giangvienMaGv;
+    public DiemPK(String tieuchiMaTc, int khoaluanMaKl, int khoaluanDangkykhoaluanMaDk, int khoaluanDangkykhoaluanDetaiMaDt, String khoaluanDangkykhoaluanSinhvienMaSv, String giangvienMaGv) {
+        this.tieuchiMaTc = tieuchiMaTc;
         this.khoaluanMaKl = khoaluanMaKl;
         this.khoaluanDangkykhoaluanMaDk = khoaluanDangkykhoaluanMaDk;
         this.khoaluanDangkykhoaluanDetaiMaDt = khoaluanDangkykhoaluanDetaiMaDt;
-    }
-
-    public String getMaTc() {
-        return maTc;
-    }
-
-    public void setMaTc(String maTc) {
-        this.maTc = maTc;
-    }
-
-    public String getGiangvienMaGv() {
-        return giangvienMaGv;
-    }
-
-    public void setGiangvienMaGv(String giangvienMaGv) {
+        this.khoaluanDangkykhoaluanSinhvienMaSv = khoaluanDangkykhoaluanSinhvienMaSv;
         this.giangvienMaGv = giangvienMaGv;
+    }
+
+    public String getTieuchiMaTc() {
+        return tieuchiMaTc;
+    }
+
+    public void setTieuchiMaTc(String tieuchiMaTc) {
+        this.tieuchiMaTc = tieuchiMaTc;
     }
 
     public int getKhoaluanMaKl() {
@@ -92,14 +90,31 @@ public class DiemPK implements Serializable {
         this.khoaluanDangkykhoaluanDetaiMaDt = khoaluanDangkykhoaluanDetaiMaDt;
     }
 
+    public String getKhoaluanDangkykhoaluanSinhvienMaSv() {
+        return khoaluanDangkykhoaluanSinhvienMaSv;
+    }
+
+    public void setKhoaluanDangkykhoaluanSinhvienMaSv(String khoaluanDangkykhoaluanSinhvienMaSv) {
+        this.khoaluanDangkykhoaluanSinhvienMaSv = khoaluanDangkykhoaluanSinhvienMaSv;
+    }
+
+    public String getGiangvienMaGv() {
+        return giangvienMaGv;
+    }
+
+    public void setGiangvienMaGv(String giangvienMaGv) {
+        this.giangvienMaGv = giangvienMaGv;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (maTc != null ? maTc.hashCode() : 0);
-        hash += (giangvienMaGv != null ? giangvienMaGv.hashCode() : 0);
+        hash += (tieuchiMaTc != null ? tieuchiMaTc.hashCode() : 0);
         hash += (int) khoaluanMaKl;
         hash += (int) khoaluanDangkykhoaluanMaDk;
         hash += (int) khoaluanDangkykhoaluanDetaiMaDt;
+        hash += (khoaluanDangkykhoaluanSinhvienMaSv != null ? khoaluanDangkykhoaluanSinhvienMaSv.hashCode() : 0);
+        hash += (giangvienMaGv != null ? giangvienMaGv.hashCode() : 0);
         return hash;
     }
 
@@ -110,10 +125,7 @@ public class DiemPK implements Serializable {
             return false;
         }
         DiemPK other = (DiemPK) object;
-        if ((this.maTc == null && other.maTc != null) || (this.maTc != null && !this.maTc.equals(other.maTc))) {
-            return false;
-        }
-        if ((this.giangvienMaGv == null && other.giangvienMaGv != null) || (this.giangvienMaGv != null && !this.giangvienMaGv.equals(other.giangvienMaGv))) {
+        if ((this.tieuchiMaTc == null && other.tieuchiMaTc != null) || (this.tieuchiMaTc != null && !this.tieuchiMaTc.equals(other.tieuchiMaTc))) {
             return false;
         }
         if (this.khoaluanMaKl != other.khoaluanMaKl) {
@@ -125,12 +137,18 @@ public class DiemPK implements Serializable {
         if (this.khoaluanDangkykhoaluanDetaiMaDt != other.khoaluanDangkykhoaluanDetaiMaDt) {
             return false;
         }
+        if ((this.khoaluanDangkykhoaluanSinhvienMaSv == null && other.khoaluanDangkykhoaluanSinhvienMaSv != null) || (this.khoaluanDangkykhoaluanSinhvienMaSv != null && !this.khoaluanDangkykhoaluanSinhvienMaSv.equals(other.khoaluanDangkykhoaluanSinhvienMaSv))) {
+            return false;
+        }
+        if ((this.giangvienMaGv == null && other.giangvienMaGv != null) || (this.giangvienMaGv != null && !this.giangvienMaGv.equals(other.giangvienMaGv))) {
+            return false;
+        }
         return true;
     }
 
     @Override
     public String toString() {
-        return "com.demo.WebKhoaLuan.model.DiemPK[ maTc=" + maTc + ", giangvienMaGv=" + giangvienMaGv + ", khoaluanMaKl=" + khoaluanMaKl + ", khoaluanDangkykhoaluanMaDk=" + khoaluanDangkykhoaluanMaDk + ", khoaluanDangkykhoaluanDetaiMaDt=" + khoaluanDangkykhoaluanDetaiMaDt + " ]";
+        return "com.demo.WebKhoaLuan.model.DiemPK[ tieuchiMaTc=" + tieuchiMaTc + ", khoaluanMaKl=" + khoaluanMaKl + ", khoaluanDangkykhoaluanMaDk=" + khoaluanDangkykhoaluanMaDk + ", khoaluanDangkykhoaluanDetaiMaDt=" + khoaluanDangkykhoaluanDetaiMaDt + ", khoaluanDangkykhoaluanSinhvienMaSv=" + khoaluanDangkykhoaluanSinhvienMaSv + ", giangvienMaGv=" + giangvienMaGv + " ]";
     }
     
 }

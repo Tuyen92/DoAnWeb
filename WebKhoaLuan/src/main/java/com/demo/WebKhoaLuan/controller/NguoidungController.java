@@ -17,6 +17,7 @@ import com.demo.WebKhoaLuan.repository.GiaovuRepository;
 import com.demo.WebKhoaLuan.repository.NguoidungRepository;
 import com.demo.WebKhoaLuan.repository.QuantriRepository;
 import com.demo.WebKhoaLuan.repository.SinhvienRepository;
+import java.util.Calendar;
 import java.util.List;
 //import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,9 +77,10 @@ public class NguoidungController {
 //        return new LoginResponse(jwt);
 //    }
    
-    //QUẢN TRỊ
+    //QUẢN TRỊ THÊM NGƯỜI DÙNG
     @PostMapping("/quantri/themND")
-    public Nguoidung themNguoidung(@RequestBody Nguoidung nguoidung){
+    public Nguoidung themNguoidung(@RequestBody Nguoidung nguoidung, @RequestBody Quantri quantri,
+            @RequestBody Giaovu giaovu, @RequestBody Giangvien giangvien, @RequestBody Sinhvien sinhvien){
         nguoidung.setHoatDong(1);
         switch (nguoidung.getNguoidungPK().getChucvuMaCv()) {
             case "ROLE_QT":
@@ -103,6 +105,8 @@ public class NguoidungController {
                 Sinhvien sv = new Sinhvien();
                 sv.setNguoidung(nguoidung);
                 sv.setMaSv(nguoidung.getNguoidungPK().getMaNd());
+                sv.setTinhTrang(0);
+                sv.setNienKhoa(String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
                 sinhVienRepository.save(sv);
                 break;
             default:
@@ -111,51 +115,57 @@ public class NguoidungController {
         return nguoidungRepository.save(nguoidung);
     }
     
+    //QUẢN TRỊ LẤY DANH SÁCH TÀI KHOẢN 
     @GetMapping("/quantri/qlTaiKhoan")
     public List<Nguoidung> layDSNguoidung(){
         return nguoidungRepository.findAll();
     }
     
+    //QUẢN TRỊ LẤY THÔNG TIN TÀI KHOẢN MỘT NGƯỜI DÙNG
     @GetMapping("/quantri/qlTaiKhoan/{maNd}")
     public Nguoidung timNguoidung(@PathVariable(value = "maNd") String maNd){
         return nguoidungRepository.layND(maNd);
     }
     
+    //NGƯỜI DÙNG XEM THÔNG TIN TÀI KHOẢN CỦA MÌNH
     @GetMapping("/nguoidung/{maNd}")
     public Nguoidung layNguoidung(@PathVariable(value = "maNd") String maNd){
         return nguoidungRepository.layND(maNd);
     }
     
+    //QUẢN TRỊ LẤY DANH SÁCH THEO TỪNG CHỨC VỤ
     @GetMapping("/quantri/qlTaiKhoan/loai/{maCv}")
     public List<Nguoidung> layDSLoaiND(@PathVariable(value = "maCv") String maCv){
         return nguoidungRepository.layLoaiND(maCv);
     }
     
+    //QUẢN TRỊ XÓA TÀI KHOẢN
     @DeleteMapping("/quantri/xoaND/{maNd}")
     public String xoaNguoidung(@PathVariable(value = "maNd") String maNd){
         Nguoidung nd = nguoidungRepository.layND(maNd);
-        switch (nd.getNguoidungPK().getChucvuMaCv()) {
-            case "ROLE_QT":
-                quanTriRepository.deleteById(maNd);
-                break;
-            case "ROLE_GVU":
-                giaoVuRepository.deleteById(maNd);
-                break;
-            case "ROLE_GV":
-                giangVienRepository.deleteById(maNd);
-                break;
-            case "ROLE_SV":
-                sinhVienRepository.deleteById(maNd);
-                break;
-        }
         try {
+            switch (nd.getNguoidungPK().getChucvuMaCv()) {
+                case "ROLE_QT":
+                    quanTriRepository.deleteById(maNd);
+                    break;
+                case "ROLE_GVU":
+                    giaoVuRepository.deleteById(maNd);
+                    break;
+                case "ROLE_GV":
+                    giangVienRepository.deleteById(maNd);
+                    break;
+                case "ROLE_SV":
+                    sinhVienRepository.deleteById(maNd);
+                    break;
+            }
             nguoidungRepository.deleteByMaNd(maNd);
         } catch (Exception e) {
             return "Xóa người dùng không thành công";
         }
-        return "Đã xóa ngời dùng thành công";
+        return "Đã xóa người dùng thành công";
     }
     
+    //QUẢN TRỊ CẬP NHẬT THÔNG TIN TÀI KHOẢN NGƯỜI DÙNG
     @PostMapping("/quantri/capnhatND/{maNd}")
     public String capNhatND(@PathVariable (value = "maNd") String maNd, @RequestBody Nguoidung nguoidung) {
         Nguoidung nd = nguoidungRepository.layND(maNd);
@@ -172,7 +182,7 @@ public class NguoidungController {
         if (!nguoidung.getGioiTinh().isEmpty())
             nd.setGioiTinh(nguoidung.getGioiTinh());
         if (!nguoidung.getSdt().isEmpty())
-            nd.setSdt(nguoidung.getSdt());
+            nd.setSdt(nguoidung.getSdt());            
         try {
             nguoidungRepository.save(nd);
         } catch (Exception e) {
@@ -181,6 +191,7 @@ public class NguoidungController {
         return "Cập nhật người dùng thành công";
     }
     
+    //NGƯỜI DÙNG CẬP NHẬT THÔNG TIN CÁC NHÂN
     @PostMapping("/capnhatND/{maNd}")
     public String capNhatNDCaNhan(@PathVariable(value = "maNd") String maNd, @RequestBody Nguoidung nguoidung){
         Nguoidung nd = nguoidungRepository.layND(maNd);
@@ -200,6 +211,7 @@ public class NguoidungController {
         return "Cập nhật người dùng thành công";
     }
     
+    //QUẢN TRỊ CẬP NHẬT TÌNH TRẠNG TÀI KHOẢN
     @PostMapping("/quantri/tinhTrangTK/{maNd}")
     public void capNhatTinhTrang(@PathVariable(value = "maNd") String maNd){
         Nguoidung nd = nguoidungRepository.layND(maNd);
@@ -210,23 +222,59 @@ public class NguoidungController {
         nguoidungRepository.save(nd);
     }
     
+    //QUẢN TRỊ XEM DANH SÁCH SINH VIÊN THEO KHOA
     @GetMapping("/quantri/dsSVKhoa/{maKhoa}")
     public List<Sinhvien> dsSinhVienKhoa(@PathVariable(value = "maKhoa") String maKhoa){
         return sinhVienRepository.laySVKhoa(maKhoa);
     }
     
+    //QUẢN TRỊ XEM DANH SÁCH SINH VIÊN THEO NGÀNH
     @GetMapping("/quantri/dsSVNganh/{maNganh}")
     public List<Sinhvien> dsSinhVienNganh(@PathVariable(value = "maNganh") String maNganh){
         return sinhVienRepository.laySVNganh(maNganh);
     }
     
+    //QUẢN TRỊ XEM DANH SÁCH TÀI KHOẢN BỊ VÔ HIỆU HÓA
     @GetMapping("/quantri/dsTaiKhoanVHH")
     public List<Nguoidung> dsTaiKhoanVHH(){
-        return nguoidungRepository.layDSHoatDong(Short.parseShort("0"));
+        return nguoidungRepository.layDSHoatDong(0);
     }
     
+    //QUẢN TRỊ XEM DANH SÁCH TÀI KHOẢN ĐANG HIỆU LỰC
     @GetMapping("/quantri/dsTaiKhoanHLH")
     public List<Nguoidung> dsTaiKhoanHLH(){
-        return nguoidungRepository.layDSHoatDong(Short.parseShort("1"));
+        return nguoidungRepository.layDSHoatDong(1);
+    }
+    
+    //QUẢN TRỊ CẬP NHẬT TÌNH TRẠNG SINH VIÊN
+    @PostMapping("/quantri/capNhatSV/{maSv}")
+    public String capNhatSV(@PathVariable(value = "maSv") String maSv){
+        Sinhvien s = sinhVienRepository.laySinhvien(maSv);
+        try {
+            if (s.getTinhTrang() == 0)
+                s.setTinhTrang(1);
+            else
+                s.setTinhTrang(0);
+            sinhVienRepository.save(s);
+        } catch (Exception e) {
+            return "Cập nhật không thành công";
+        }
+        return "Đã cập nhật thành công";
+    }
+    
+    //QUẢN TRỊ CẬP NHẬT TÌNH TRẠNG HOẠT ĐỘNG TÀI KHOẢN
+    @PostMapping("/quantri/capNhatTK/{maNd}")
+    public String capNhatTT(@PathVariable(value = "maSv") String maNd){
+        Nguoidung nd = nguoidungRepository.layND(maNd);
+        try {
+            if (nd.getHoatDong() == 0)
+                nd.setHoatDong(1);
+            else
+                nd.setHoatDong(0);
+            nguoidungRepository.save(nd);
+        } catch (Exception e) {
+            return "Cập nhật không thành công";
+        }
+        return "Đã cập nhật thành công";
     }
 }

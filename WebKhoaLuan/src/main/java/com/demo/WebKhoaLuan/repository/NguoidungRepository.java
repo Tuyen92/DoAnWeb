@@ -34,5 +34,5 @@ public interface NguoidungRepository extends JpaRepository<Nguoidung, NguoidungP
     void deleteByMaNd(@Param("maNd") String maNd);
 
     @Query("SELECT n FROM Nguoidung n WHERE n.hoatDong = :#{#hoatDong}")
-    List<Nguoidung> layDSHoatDong(short hoatDong);
+    List<Nguoidung> layDSHoatDong(int hoatDong);
 }

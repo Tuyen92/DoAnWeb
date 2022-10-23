@@ -9,6 +9,7 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  *
@@ -29,14 +30,20 @@ public class KhoaluanPK implements Serializable {
     @NotNull
     @Column(name = "dangkykhoaluan_detai_ma_dt")
     private int dangkykhoaluanDetaiMaDt;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 10)
+    @Column(name = "dangkykhoaluan_sinhvien_ma_sv")
+    private String dangkykhoaluanSinhvienMaSv;
 
     public KhoaluanPK() {
     }
 
-    public KhoaluanPK(int maKl, int dangkykhoaluanMaDk, int dangkykhoaluanDetaiMaDt) {
+    public KhoaluanPK(int maKl, int dangkykhoaluanMaDk, int dangkykhoaluanDetaiMaDt, String dangkykhoaluanSinhvienMaSv) {
         this.maKl = maKl;
         this.dangkykhoaluanMaDk = dangkykhoaluanMaDk;
         this.dangkykhoaluanDetaiMaDt = dangkykhoaluanDetaiMaDt;
+        this.dangkykhoaluanSinhvienMaSv = dangkykhoaluanSinhvienMaSv;
     }
 
     public int getMaKl() {
@@ -63,12 +70,21 @@ public class KhoaluanPK implements Serializable {
         this.dangkykhoaluanDetaiMaDt = dangkykhoaluanDetaiMaDt;
     }
 
+    public String getDangkykhoaluanSinhvienMaSv() {
+        return dangkykhoaluanSinhvienMaSv;
+    }
+
+    public void setDangkykhoaluanSinhvienMaSv(String dangkykhoaluanSinhvienMaSv) {
+        this.dangkykhoaluanSinhvienMaSv = dangkykhoaluanSinhvienMaSv;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
         hash += (int) maKl;
         hash += (int) dangkykhoaluanMaDk;
         hash += (int) dangkykhoaluanDetaiMaDt;
+        hash += (dangkykhoaluanSinhvienMaSv != null ? dangkykhoaluanSinhvienMaSv.hashCode() : 0);
         return hash;
     }
 
@@ -88,12 +104,15 @@ public class KhoaluanPK implements Serializable {
         if (this.dangkykhoaluanDetaiMaDt != other.dangkykhoaluanDetaiMaDt) {
             return false;
         }
+        if ((this.dangkykhoaluanSinhvienMaSv == null && other.dangkykhoaluanSinhvienMaSv != null) || (this.dangkykhoaluanSinhvienMaSv != null && !this.dangkykhoaluanSinhvienMaSv.equals(other.dangkykhoaluanSinhvienMaSv))) {
+            return false;
+        }
         return true;
     }
 
     @Override
     public String toString() {
-        return "com.demo.WebKhoaLuan.model.KhoaluanPK[ maKl=" + maKl + ", dangkykhoaluanMaDk=" + dangkykhoaluanMaDk + ", dangkykhoaluanDetaiMaDt=" + dangkykhoaluanDetaiMaDt + " ]";
+        return "com.demo.WebKhoaLuan.model.KhoaluanPK[ maKl=" + maKl + ", dangkykhoaluanMaDk=" + dangkykhoaluanMaDk + ", dangkykhoaluanDetaiMaDt=" + dangkykhoaluanDetaiMaDt + ", dangkykhoaluanSinhvienMaSv=" + dangkykhoaluanSinhvienMaSv + " ]";
     }
     
 }

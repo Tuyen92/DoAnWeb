@@ -27,13 +27,14 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Diem.findAll", query = "SELECT d FROM Diem d"),
-    @NamedQuery(name = "Diem.findByMaTc", query = "SELECT d FROM Diem d WHERE d.diemPK.maTc = :maTc"),
-    @NamedQuery(name = "Diem.findByDiem", query = "SELECT d FROM Diem d WHERE d.diem = :diem"),
-    @NamedQuery(name = "Diem.findByNhanXet", query = "SELECT d FROM Diem d WHERE d.nhanXet = :nhanXet"),
-    @NamedQuery(name = "Diem.findByGiangvienMaGv", query = "SELECT d FROM Diem d WHERE d.diemPK.giangvienMaGv = :giangvienMaGv"),
+    @NamedQuery(name = "Diem.findByTieuchiMaTc", query = "SELECT d FROM Diem d WHERE d.diemPK.tieuchiMaTc = :tieuchiMaTc"),
     @NamedQuery(name = "Diem.findByKhoaluanMaKl", query = "SELECT d FROM Diem d WHERE d.diemPK.khoaluanMaKl = :khoaluanMaKl"),
     @NamedQuery(name = "Diem.findByKhoaluanDangkykhoaluanMaDk", query = "SELECT d FROM Diem d WHERE d.diemPK.khoaluanDangkykhoaluanMaDk = :khoaluanDangkykhoaluanMaDk"),
-    @NamedQuery(name = "Diem.findByKhoaluanDangkykhoaluanDetaiMaDt", query = "SELECT d FROM Diem d WHERE d.diemPK.khoaluanDangkykhoaluanDetaiMaDt = :khoaluanDangkykhoaluanDetaiMaDt")})
+    @NamedQuery(name = "Diem.findByKhoaluanDangkykhoaluanDetaiMaDt", query = "SELECT d FROM Diem d WHERE d.diemPK.khoaluanDangkykhoaluanDetaiMaDt = :khoaluanDangkykhoaluanDetaiMaDt"),
+    @NamedQuery(name = "Diem.findByKhoaluanDangkykhoaluanSinhvienMaSv", query = "SELECT d FROM Diem d WHERE d.diemPK.khoaluanDangkykhoaluanSinhvienMaSv = :khoaluanDangkykhoaluanSinhvienMaSv"),
+    @NamedQuery(name = "Diem.findByDiem", query = "SELECT d FROM Diem d WHERE d.diem = :diem"),
+    @NamedQuery(name = "Diem.findByNhanXet", query = "SELECT d FROM Diem d WHERE d.nhanXet = :nhanXet"),
+    @NamedQuery(name = "Diem.findByGiangvienMaGv", query = "SELECT d FROM Diem d WHERE d.diemPK.giangvienMaGv = :giangvienMaGv")})
 public class Diem implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -51,10 +52,11 @@ public class Diem implements Serializable {
     @JoinColumns({
         @JoinColumn(name = "khoaluan_ma_kl", referencedColumnName = "ma_kl", insertable = false, updatable = false),
         @JoinColumn(name = "khoaluan_dangkykhoaluan_ma_dk", referencedColumnName = "dangkykhoaluan_ma_dk", insertable = false, updatable = false),
-        @JoinColumn(name = "khoaluan_dangkykhoaluan_detai_ma_dt", referencedColumnName = "dangkykhoaluan_detai_ma_dt", insertable = false, updatable = false)})
+        @JoinColumn(name = "khoaluan_dangkykhoaluan_detai_ma_dt", referencedColumnName = "dangkykhoaluan_detai_ma_dt", insertable = false, updatable = false),
+        @JoinColumn(name = "khoaluan_dangkykhoaluan_sinhvien_ma_sv", referencedColumnName = "dangkykhoaluan_sinhvien_ma_sv", insertable = false, updatable = false)})
     @ManyToOne(optional = false)
     private Khoaluan khoaluan;
-    @JoinColumn(name = "ma_tc", referencedColumnName = "ma_tc", insertable = false, updatable = false)
+    @JoinColumn(name = "tieuchi_ma_tc", referencedColumnName = "ma_tc", insertable = false, updatable = false)
     @ManyToOne(optional = false)
     private Tieuchi tieuchi;
 
@@ -65,8 +67,8 @@ public class Diem implements Serializable {
         this.diemPK = diemPK;
     }
 
-    public Diem(String maTc, String giangvienMaGv, int khoaluanMaKl, int khoaluanDangkykhoaluanMaDk, int khoaluanDangkykhoaluanDetaiMaDt) {
-        this.diemPK = new DiemPK(maTc, giangvienMaGv, khoaluanMaKl, khoaluanDangkykhoaluanMaDk, khoaluanDangkykhoaluanDetaiMaDt);
+    public Diem(String tieuchiMaTc, int khoaluanMaKl, int khoaluanDangkykhoaluanMaDk, int khoaluanDangkykhoaluanDetaiMaDt, String khoaluanDangkykhoaluanSinhvienMaSv, String giangvienMaGv) {
+        this.diemPK = new DiemPK(tieuchiMaTc, khoaluanMaKl, khoaluanDangkykhoaluanMaDk, khoaluanDangkykhoaluanDetaiMaDt, khoaluanDangkykhoaluanSinhvienMaSv, giangvienMaGv);
     }
 
     public DiemPK getDiemPK() {

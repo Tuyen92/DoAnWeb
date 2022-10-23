@@ -23,4 +23,7 @@ public interface SinhvienRepository extends JpaRepository<Sinhvien, String>{
     
     @Query("SELECT s FROM Sinhvien s WHERE s.nganh.nganhPK.maNganh = :#{#maNganh}")
     List<Sinhvien> laySVNganh(String maNganh);
+    
+    @Query("SELECT s FROM Sinhvien s WHERE s.maSv = :#{#maSv}")
+    Sinhvien laySinhvien(String maSv);
 }

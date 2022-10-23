@@ -23,9 +23,9 @@ import org.springframework.transaction.annotation.Transactional;
 public interface DangkyRepository extends JpaRepository<Dangkykhoaluan, DangkykhoaluanPK>{
     
     @Query("SELECT dk FROM Dangkykhoaluan dk WHERE dk.xetDuyet = :#{#xetDuyet}")
-    List<Dangkykhoaluan> dsDKXetDuyet(short xetDuyet);
+    List<Dangkykhoaluan> dsDKXetDuyet(int xetDuyet);
     
-    @Query("SELECT dk FROM Dangkykhoaluan dk WHERE dk.maSv = :#{#maSv}")
+    @Query("SELECT dk FROM Dangkykhoaluan dk WHERE dk.dangkykhoaluanPK.sinhvienMaSv = :#{#maSv}")
     Dangkykhoaluan layDKSV(String maSv);
     
     @Query("SELECT dk FROM Dangkykhoaluan dk WHERE dk.dangkykhoaluanPK.maDk = :#{#maDk}")

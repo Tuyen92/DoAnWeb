@@ -26,21 +26,25 @@ public class DetaiController {
     @Autowired
     private DetaiRepository deTaiRepository;
     
+    //NGƯỜI DÙNG XEM DANH SÁCH ĐỀ TÀI
     @GetMapping("/dsDeTai")
     public List<Detai> dsDeTai(){
         return deTaiRepository.findAll();
     }
     
+    //NGƯỜI DÙNG XEM DANH SÁCH ĐỀ TÀI THEO KHOA
     @GetMapping("/dsDeTai/khoa/{maKhoa}")
     public List<Detai> dsDeTaiKhoa(@PathVariable(value = "maKhoa") String maKhoa){
         return deTaiRepository.dsDeTaiKhoa(maKhoa);
     }
     
+    //NGƯỜI DÙNG TÌM MỘT ĐỀ TÀI
     @GetMapping("/dsDeTai/{maDt}")
     public Detai layDeTai(@PathVariable(value = "maDt") int maDt){
         return deTaiRepository.layDeTai(maDt);
     }
     
+    //GIÁO VỤ XÓA ĐỀ TÀI
     @DeleteMapping("/giaovu/xoaDeTai/{maDt}")
     public String xoaDeTai(@PathVariable(value = "maDt") int maDt){
         try {
@@ -51,6 +55,7 @@ public class DetaiController {
         return "Xóa đề tài thành công";
     }
     
+    //GIÁO VỤ THÊM ĐỀ TÀI
     @PostMapping("/giaovu/themDeTai")
     public String themDeTai(@RequestBody Detai detai){
         try {

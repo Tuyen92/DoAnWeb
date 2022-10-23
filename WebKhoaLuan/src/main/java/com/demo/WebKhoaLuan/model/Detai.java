@@ -4,9 +4,11 @@
  */
 package com.demo.WebKhoaLuan.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
+import java.util.Date;
+import java.util.Set;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -14,16 +16,19 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
  * @author ADMIN
  */
-@JsonIgnoreProperties({"dangkykhoaluanSet"})
 @Entity
 @Table(name = "detai")
 @XmlRootElement
@@ -47,12 +52,14 @@ public class Detai implements Serializable {
     @Size(max = 45)
     @Column(name = "noi_dunngdt")
     private String noiDunngdt;
-    @Size(max = 45)
     @Column(name = "han_nop")
-    private String hanNop;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date hanNop;
     @JoinColumn(name = "khoa_ma_khoa", referencedColumnName = "ma_khoa")
     @ManyToOne(optional = false)
     private Khoa khoaMaKhoa;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "detai")
+    private Set<Dangkykhoaluan> dangkykhoaluanSet;
 
     public Detai() {
     }
@@ -85,11 +92,11 @@ public class Detai implements Serializable {
         this.noiDunngdt = noiDunngdt;
     }
 
-    public String getHanNop() {
+    public Date getHanNop() {
         return hanNop;
     }
 
-    public void setHanNop(String hanNop) {
+    public void setHanNop(Date hanNop) {
         this.hanNop = hanNop;
     }
 
@@ -99,6 +106,15 @@ public class Detai implements Serializable {
 
     public void setKhoaMaKhoa(Khoa khoaMaKhoa) {
         this.khoaMaKhoa = khoaMaKhoa;
+    }
+
+    @XmlTransient
+    public Set<Dangkykhoaluan> getDangkykhoaluanSet() {
+        return dangkykhoaluanSet;
+    }
+
+    public void setDangkykhoaluanSet(Set<Dangkykhoaluan> dangkykhoaluanSet) {
+        this.dangkykhoaluanSet = dangkykhoaluanSet;
     }
 
     @Override
