@@ -5,6 +5,7 @@
 package com.demo.WebKhoaLuan.controller;
 
 import com.demo.WebKhoaLuan.model.Khoaluan;
+import com.demo.WebKhoaLuan.model.Tongketkhoaluan;
 import com.demo.WebKhoaLuan.repository.KhoaluanRepository;
 import java.util.Calendar;
 import java.util.List;
@@ -45,7 +46,7 @@ public class KhoaluanController {
         return khoaLuanRepository.layKLGV(maGv);
     }
     
-    //DANH SÁCH KHÓA LUẬN CỦA MỘ HỘI ĐỒNG
+    //DANH SÁCH KHÓA LUẬN CỦA MỘT HỘI ĐỒNG
     @GetMapping("/dsKhoaLuan/{maHd}")
     public List<Khoaluan> dsKLHoiDong(@PathVariable(value = "maHd") int maHd){
         return khoaLuanRepository.layDsKLHD(maHd);
@@ -73,8 +74,10 @@ public class KhoaluanController {
     @PostMapping("/sinhvien/nopKhoaLuan/{maKl}")
     public String nopKhoaLuan(@PathVariable(value = "maKl") int maKl, @RequestBody Khoaluan khoaluan){
         Khoaluan kl = khoaLuanRepository.layKhoaLuan(maKl);
+        kl.setFileNop(khoaluan.getFileNop());
+        kl.setGhiChu(khoaluan.getGhiChu());
         kl.setNgayNop(Calendar.getInstance().getTime());
-        if (!khoaluan.getGhiChu().isEmpty())
+        if (khoaluan.getGhiChu() != null)
             kl.setGhiChu(khoaluan.getGhiChu());
         try {
             khoaLuanRepository.save(kl);

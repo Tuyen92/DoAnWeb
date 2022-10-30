@@ -5,7 +5,9 @@
 package com.demo.WebKhoaLuan.controller;
 
 import com.demo.WebKhoaLuan.model.Dangkykhoaluan;
+import com.demo.WebKhoaLuan.model.DangkykhoaluanPK;
 import com.demo.WebKhoaLuan.model.Khoaluan;
+import com.demo.WebKhoaLuan.model.KhoaluanPK;
 import com.demo.WebKhoaLuan.repository.DangkyRepository;
 import com.demo.WebKhoaLuan.repository.KhoaluanRepository;
 import java.util.Calendar;
@@ -79,6 +81,22 @@ public class DangkyController {
         return "Đăng ký thành công";
     }
     
+    @PostMapping("/sinhvien/dangKyKL/{maDt}")
+    public String themDKKL(@PathVariable(value = "maDt") int maDt, @RequestBody Dangkykhoaluan dangkykhoaluan){  
+        DangkykhoaluanPK dkPK = new DangkykhoaluanPK();
+        dkPK.setDetaiMaDt(maDt);
+        dkPK.setSinhvienMaSv(dangkykhoaluan.getSinhvien().getMaSv());
+        dangkykhoaluan.setXetDuyet(0);
+        dangkykhoaluan.setNgayDk(Calendar.getInstance().getTime());
+        dangkykhoaluan.setDangkykhoaluanPK(dkPK);
+        try {
+            dangkyRepository.save(dangkykhoaluan);
+        } catch (Exception e) {
+            return "Đăng ký không thành công";
+        }
+        return "Đăng ký thành công";
+    }
+    
     //SINH VIÊN XEM ĐĂNG KÝ KHÓA LUẬN CỦA MÌNH
     @GetMapping("/sinhvien/xemDKKL/{maSv}")
     public Dangkykhoaluan xemDKKL(@PathVariable(value = "maSv") String maSv){
@@ -89,11 +107,17 @@ public class DangkyController {
     @PostMapping("/giaovu/xetDuyet/{maDk}")
     public String xetDuyetDK(@PathVariable(value = "maDk") int maDk, @RequestBody Khoaluan khoaluan){
         Dangkykhoaluan dk = dangkyRepository.layDK(maDk);
+        KhoaluanPK klPK = new KhoaluanPK();
+        klPK.setMaKl(maDk);
+        klPK.setDangkykhoaluanMaDk(maDk);
+        klPK.setDangkykhoaluanSinhvienMaSv(dk.getSinhvien().getMaSv());
+        klPK.setDangkykhoaluanDetaiMaDt(dk.getDetai().getMaDt());
         dk.setXetDuyet(1);
         if (khoaluanRepository.demSoLuongKL(khoaluan.getHoidongMaHd().getMaHd()) < 5) {
             khoaluan.setDangkykhoaluan(dk);
             khoaluan.setNam(String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
             khoaluan.setMaSv2(dk.getMaSv2());
+            khoaluan.setKhoaluanPK(klPK);
             try {
                 dangkyRepository.save(dk);
                 khoaluanRepository.save(khoaluan);

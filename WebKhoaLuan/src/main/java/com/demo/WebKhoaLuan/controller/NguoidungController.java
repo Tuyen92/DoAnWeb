@@ -9,6 +9,8 @@ package com.demo.WebKhoaLuan.controller;
 //import com.demo.WebKhoaLuan.login.LoginResponse;
 import com.demo.WebKhoaLuan.model.Giangvien;
 import com.demo.WebKhoaLuan.model.Giaovu;
+import com.demo.WebKhoaLuan.model.Nganh;
+import com.demo.WebKhoaLuan.model.NganhPK;
 import com.demo.WebKhoaLuan.model.Nguoidung;
 import com.demo.WebKhoaLuan.model.Quantri;
 import com.demo.WebKhoaLuan.model.Sinhvien;
@@ -50,63 +52,62 @@ public class NguoidungController {
     private GiaovuRepository giaoVuRepository;
     @Autowired
     private QuantriRepository quanTriRepository;
-    
-//    @Autowired
-//    private AuthenticationManager authenticationManager;
-    
-//    @Autowired
-//    private JWTToken tokenProvider;
-//    
-//    @PostMapping("/login")
-//    public LoginResponse authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
-//
-//        // Xác thực từ username và password.
-//        Authentication authentication = authenticationManager.authenticate(
-//                new UsernamePasswordAuthenticationToken(
-//                        loginRequest.getUsername(),
-//                        loginRequest.getPassword()
-//                )
-//        );
-//
-//        // Nếu không xảy ra exception tức là thông tin hợp lệ
-//        // Set thông tin authentication vào Security Context
-//        SecurityContextHolder.getContext().setAuthentication(authentication);
-//
-//        // Trả về jwt cho người dùng.
-//        String jwt = tokenProvider.generateToken((Nguoidung) authentication.getPrincipal());
-//        return new LoginResponse(jwt);
-//    }
+
+    //ĐĂNG NHẬP
+    @PostMapping("/dangNhap")
+    public String dangNhap(@RequestBody Nguoidung nguoidung){
+        try {
+            Nguoidung nd = nguoidungRepository.layND(nguoidung.getUsername());
+            if (nd.getPassword().equals(nguoidung.getPassword())) {
+                return "Đăng nhập thành công";
+            }
+            else
+                return "Nhập sai mật khẩu";
+        } catch (Exception e) {
+            return "Tài khoản không hiện có";
+        }
+    }
    
     //QUẢN TRỊ THÊM NGƯỜI DÙNG
     @PostMapping("/quantri/themND")
-    public Nguoidung themNguoidung(@RequestBody Nguoidung nguoidung, @RequestBody Quantri quantri,
-            @RequestBody Giaovu giaovu, @RequestBody Giangvien giangvien, @RequestBody Sinhvien sinhvien){
+    public Nguoidung themNguoidung(@RequestBody Nguoidung nguoidung){
         nguoidung.setHoatDong(1);
+        nguoidung.setUsername(nguoidung.getNguoidungPK().getMaNd());
         switch (nguoidung.getNguoidungPK().getChucvuMaCv()) {
             case "ROLE_QT":
                 Quantri qt = new Quantri();
                 qt.setNguoidung(nguoidung);
+                qt.setCongViec("-");
                 qt.setMaQt(nguoidung.getNguoidungPK().getMaNd());
                 quanTriRepository.save(qt);
                 break;
             case "ROLE_GVU":
                 Giaovu gvu = new Giaovu();
                 gvu.setNguoidung(nguoidung);
+                gvu.setPhongBan("-");
                 gvu.setMaGvu(nguoidung.getNguoidungPK().getMaNd());
                 giaoVuRepository.save(gvu);
                 break;
             case "ROLE_GV":
                 Giangvien gv = new Giangvien();
+                gv.setHocHam("-");
+                gv.setHocVi("-");
                 gv.setNguoidung(nguoidung);
                 gv.setMaGv(nguoidung.getNguoidungPK().getMaNd());
                 giangVienRepository.save(gv);
                 break;
             case "ROLE_SV":
                 Sinhvien sv = new Sinhvien();
+                Nganh n = new Nganh();
+                NganhPK nPK = new NganhPK();
+                nPK.setKhoaMaKhoa("IT");
+                nPK.setMaNganh("IT01");
+                n.setNganhPK(nPK);
                 sv.setNguoidung(nguoidung);
                 sv.setMaSv(nguoidung.getNguoidungPK().getMaNd());
                 sv.setTinhTrang(0);
                 sv.setNienKhoa(String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
+                sv.setNganh(n);
                 sinhVienRepository.save(sv);
                 break;
             default:
@@ -169,19 +170,19 @@ public class NguoidungController {
     @PostMapping("/quantri/capnhatND/{maNd}")
     public String capNhatND(@PathVariable (value = "maNd") String maNd, @RequestBody Nguoidung nguoidung) {
         Nguoidung nd = nguoidungRepository.layND(maNd);
-        if (!nguoidung.getHo().isEmpty())
+        if (nguoidung.getHo() != null)
             nd.setHo(nguoidung.getHo());
-        if (!nguoidung.getTen().isEmpty())
+        if (nguoidung.getTen() != null)
             nd.setTen(nguoidung.getTen());
         if (nguoidung.getNgaySinh() != null)
             nd.setNgaySinh(nguoidung.getNgaySinh());
-        if (!nguoidung.getDiaChi().isEmpty())
+        if (nguoidung.getDiaChi()!= null)
             nd.setDiaChi(nguoidung.getDiaChi());
-        if (!nguoidung.getEmail().isEmpty())
+        if (nguoidung.getEmail() != null)
             nd.setEmail(nguoidung.getEmail());
-        if (!nguoidung.getGioiTinh().isEmpty())
+        if (nguoidung.getGioiTinh() != null)
             nd.setGioiTinh(nguoidung.getGioiTinh());
-        if (!nguoidung.getSdt().isEmpty())
+        if (nguoidung.getSdt() != null)
             nd.setSdt(nguoidung.getSdt());            
         try {
             nguoidungRepository.save(nd);
@@ -195,31 +196,47 @@ public class NguoidungController {
     @PostMapping("/capnhatND/{maNd}")
     public String capNhatNDCaNhan(@PathVariable(value = "maNd") String maNd, @RequestBody Nguoidung nguoidung){
         Nguoidung nd = nguoidungRepository.layND(maNd);
+        String message = "";
         if (nguoidung.getNgaySinh() != null)
             nd.setNgaySinh(nguoidung.getNgaySinh());
-        if (!nguoidung.getDiaChi().isEmpty())
+        if (nguoidung.getDiaChi() != null)
             nd.setDiaChi(nguoidung.getDiaChi());
-        if (!nguoidung.getEmail().isEmpty())
+        if (nguoidung.getEmail() != null)
             nd.setEmail(nguoidung.getEmail());
-        if (!nguoidung.getSdt().isEmpty())
+        if (nguoidung.getSdt() != null)
             nd.setSdt(nguoidung.getSdt());
+        if (nguoidung.getPassword() != null) {
+            if(nguoidung.getPassword().equals(nguoidung.getConfirmPass()))
+                nd.setPassword(nguoidung.getConfirmPass());
+            else{
+                message = "Nhập sai mật khẩu mới";
+                return message;
+            }  
+        }
         try {
             nguoidungRepository.save(nd);
         } catch (Exception e) {
-           return "Cập nhật người dùng không thành công"; 
+           message = "Cập nhật người dùng không thành công";
+           return message;
         }
-        return "Cập nhật người dùng thành công";
+        message = "Cập nhật người dùng thành công";
+        return message;
     }
     
     //QUẢN TRỊ CẬP NHẬT TÌNH TRẠNG TÀI KHOẢN
     @PostMapping("/quantri/tinhTrangTK/{maNd}")
-    public void capNhatTinhTrang(@PathVariable(value = "maNd") String maNd){
+    public String capNhatTinhTrang(@PathVariable(value = "maNd") String maNd){
         Nguoidung nd = nguoidungRepository.layND(maNd);
         if (nd.getHoatDong() == 1)
             nd.setHoatDong(0);
         else
             nd.setHoatDong(1);
-        nguoidungRepository.save(nd);
+        try {
+            nguoidungRepository.save(nd);
+            return "Đã cập nhật thành công";
+        } catch (Exception e) {
+            return "Cập nhật không thành công";
+        }   
     }
     
     //QUẢN TRỊ XEM DANH SÁCH SINH VIÊN THEO KHOA

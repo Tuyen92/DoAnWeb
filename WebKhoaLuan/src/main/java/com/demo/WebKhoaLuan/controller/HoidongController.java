@@ -5,11 +5,15 @@
 package com.demo.WebKhoaLuan.controller;
 
 import com.demo.WebKhoaLuan.model.Chitiethoidong;
+import com.demo.WebKhoaLuan.model.ChitiethoidongPK;
+import com.demo.WebKhoaLuan.model.Giangvien;
 import com.demo.WebKhoaLuan.model.Hoidong;
 import com.demo.WebKhoaLuan.model.Khoaluan;
 import com.demo.WebKhoaLuan.repository.ChitiethoidongRepository;
+import com.demo.WebKhoaLuan.repository.GiangvienRepository;
 import com.demo.WebKhoaLuan.repository.HoidongRepository;
 import com.demo.WebKhoaLuan.repository.KhoaluanRepository;
+import java.util.Calendar;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -32,7 +36,9 @@ public class HoidongController {
     @Autowired
     private ChitiethoidongRepository chiTietHoiDongRepository;
     @Autowired
-    private KhoaluanRepository KhoaluanRepository;
+    private KhoaluanRepository khoaLuanRepository;
+    @Autowired
+    private GiangvienRepository giangVienReposirtory;
     
     //GIÁO VỤ LẤY DANH SÁCH HỘI ĐỒNG
     @GetMapping("/giaovu/dsHoiDong")
@@ -64,7 +70,7 @@ public class HoidongController {
         return hoiDongRepository.layHDGV(maGv);
     }
     
-    //GIAO VỤ CẬP NHẬT TÌNH TRẠNG CỦA HỘI ĐỒNG
+    //GIÁO VỤ CẬP NHẬT TÌNH TRẠNG CỦA HỘI ĐỒNG
     @PostMapping("/giaovu/tinhTrangHD/{maHd}")
     public String tinhTrangHD(@PathVariable(value = "maHd") int maHd){
         Hoidong hd = hoiDongRepository.layHD(maHd);
@@ -83,9 +89,10 @@ public class HoidongController {
     //GIÁO VỤ THÊM HỘI ĐỒNG MỚI
     @PostMapping("/giaovu/themHD")
     public String themHD(@RequestBody Hoidong hoidong){
-        Hoidong hd = new Hoidong();
+        hoidong.setNgayLap(Calendar.getInstance().getTime());
+        hoidong.setTinhTranghd(1);
         try {
-            hoiDongRepository.save(hd);
+            hoiDongRepository.save(hoidong);
         } catch (Exception e) {
             return "Thêm hội đồng không thành công";
         }
@@ -97,7 +104,11 @@ public class HoidongController {
     public String phanCong(@PathVariable(value = "maHd") int maHd, @RequestBody Chitiethoidong chitiethoidong){
         if (kiemSLThanhVien(maHd) < 5){
             Hoidong hd = hoiDongRepository.layHD(maHd);
-            chitiethoidong.setHoidong(hd);
+            ChitiethoidongPK cthdPK = new ChitiethoidongPK();
+            cthdPK.setHoidongMaHd(hd.getMaHd());
+            cthdPK.setGiangvienMaGv(chitiethoidong.getGiangvien().getMaGv());
+            chitiethoidong.setChitiethoidongPK(cthdPK);
+            chitiethoidong.setHoidong(hd);            
             try {
                 chiTietHoiDongRepository.save(chitiethoidong);
             } catch (Exception e) {
@@ -130,7 +141,7 @@ public class HoidongController {
     
     //KIỂM TRA SỐ LƯỢNG KHÓA LUẬN MỘT HỘI ĐỒNG
     public int kiemSLKhoaLuan(int maHd){
-        List<Khoaluan> dsKL = KhoaluanRepository.layDsKLHD(maHd);
+        List<Khoaluan> dsKL = khoaLuanRepository.layDsKLHD(maHd);
         return dsKL.size();
     }
 }
