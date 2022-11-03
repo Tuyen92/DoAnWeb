@@ -4,6 +4,7 @@
  */
 package com.demo.WebKhoaLuan.controller;
 
+import com.demo.WebKhoaLuan.model.Dangkykhoaluan;
 import com.demo.WebKhoaLuan.model.Khoaluan;
 import com.demo.WebKhoaLuan.model.Tongketkhoaluan;
 import com.demo.WebKhoaLuan.repository.KhoaluanRepository;

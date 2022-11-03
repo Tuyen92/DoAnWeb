@@ -73,6 +73,7 @@ public class NguoidungController {
     public Nguoidung themNguoidung(@RequestBody Nguoidung nguoidung){
         nguoidung.setHoatDong(1);
         nguoidung.setUsername(nguoidung.getNguoidungPK().getMaNd());
+        nguoidung.setPassword(nguoidung.getNguoidungPK().getMaNd());
         switch (nguoidung.getNguoidungPK().getChucvuMaCv()) {
             case "ROLE_QT":
                 Quantri qt = new Quantri();
@@ -283,15 +284,21 @@ public class NguoidungController {
     @PostMapping("/quantri/capNhatTK/{maNd}")
     public String capNhatTT(@PathVariable(value = "maSv") String maNd){
         Nguoidung nd = nguoidungRepository.layND(maNd);
+        String message = "";
         try {
-            if (nd.getHoatDong() == 0)
+            if (nd.getHoatDong() == 0){
                 nd.setHoatDong(1);
-            else
+                message = "Đã hiệu lực hóa tài khoản";
+            }
+            else{
                 nd.setHoatDong(0);
+                message = "Đã vô hiệu hóa tài khoản";
+            }    
             nguoidungRepository.save(nd);
         } catch (Exception e) {
-            return "Cập nhật không thành công";
+            message = "Cập nhật không thành công";
+            return message;
         }
-        return "Đã cập nhật thành công";
+        return message;
     }
 }
